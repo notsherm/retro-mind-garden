@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { format, parse } from 'date-fns';
 
 interface CalendarDialogProps {
   open: boolean;
@@ -15,7 +16,10 @@ interface CalendarDialogProps {
 
 export const CalendarDialog = ({ open, onOpenChange, onDateSelect }: CalendarDialogProps) => {
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onDateSelect(e.target.value);
+    // Convert from HTML date format (YYYY-MM-DD) to desired format (MM/DD/YYYY)
+    const date = new Date(e.target.value);
+    const formattedDate = format(date, 'MM/dd/yyyy');
+    onDateSelect(formattedDate);
     onOpenChange(false);
   };
 

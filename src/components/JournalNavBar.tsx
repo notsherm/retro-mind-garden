@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 import { SearchDialog } from './dialogs/SearchDialog';
 import { CalendarDialog } from './dialogs/CalendarDialog';
+import { parse, format } from 'date-fns';
 
 interface JournalNavBarProps {
   onDateChange: (date: string) => void;
@@ -27,6 +28,13 @@ export const JournalNavBar = ({ onDateChange, onSearch }: JournalNavBarProps) =>
     onSearch(searchQuery);
     setShowSearch(false);
     setSearchQuery('');
+  };
+
+  const handleDateSelect = (dateStr: string) => {
+    // Convert from MM/DD/YYYY to YYYY-MM-DD for internal use
+    const date = parse(dateStr, 'MM/dd/yyyy', new Date());
+    const formattedDate = format(date, 'yyyy-MM-dd');
+    onDateChange(formattedDate);
   };
 
   return (
@@ -71,7 +79,7 @@ export const JournalNavBar = ({ onDateChange, onSearch }: JournalNavBarProps) =>
       <CalendarDialog
         open={calendarDialogOpen}
         onOpenChange={setCalendarDialogOpen}
-        onDateSelect={onDateChange}
+        onDateSelect={handleDateSelect}
       />
     </div>
   );
