@@ -8,7 +8,7 @@
   :root,
   [data-theme="classic-terminal"] {
     --terminal-green: #4AF626;
-    --terminal-black: #221F26;  /* Dark blue shade instead of pure black */
+    --terminal-black: #221F26;
     --terminal-gray: #8E9196;
     
     --background: 222.2 84% 4.9%;
@@ -141,27 +141,22 @@
     @apply rounded-lg p-4;
   }
 
-  /* Left panel specific styles - removed box/container styling */
   .left-panel {
     @apply bg-transparent;
   }
 
-  /* Right panel specific styles */
   .right-panel {
     @apply bg-terminal-black border border-terminal-green;
   }
 
-  /* Hide email input initially */
   .supabase-auth-ui_ui-container form > div:first-child {
     @apply hidden;
   }
 
-  /* Style the auth container */
   .supabase-auth-ui_ui-container {
     @apply space-y-4;
   }
 
-  /* Add typing animation */
   .supabase-auth-ui_ui-label {
     @apply overflow-hidden whitespace-nowrap border-r-4 border-terminal-green animate-typing;
   }
