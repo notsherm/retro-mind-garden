@@ -28,7 +28,7 @@ export const JournalInput = ({
   const isViewingPastDate = selectedDate !== today;
 
   return (
-    <div className="w-full max-w-md space-y-4">
+    <div className="w-[600px] space-y-4">
       <Input
         type="text"
         placeholder="New section title..."
@@ -41,7 +41,7 @@ export const JournalInput = ({
         placeholder="Write your thoughts..."
         value={content}
         onChange={onContentChange}
-        className="retro-input min-h-[500px] resize-none"
+        className="retro-input min-h-[300px] resize-none"
       />
 
       {isViewingPastDate && !selectedEntryId && (
