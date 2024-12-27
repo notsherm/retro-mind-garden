@@ -123,15 +123,22 @@
   }
 
   .retro-input {
-    @apply bg-transparent border border-terminal-green text-terminal-green p-2 w-full focus:outline-none focus:ring-1 focus:ring-terminal-green transition-all duration-200;
+    @apply bg-transparent text-terminal-green p-2 w-full focus:outline-none transition-all duration-200;
+    box-shadow: 0 0 10px rgba(155, 135, 245, 0.2);
+    background: linear-gradient(180deg, rgba(155, 135, 245, 0.05) 0%, rgba(155, 135, 245, 0.02) 100%);
+  }
+
+  .retro-input:focus {
+    box-shadow: 0 0 15px rgba(155, 135, 245, 0.3);
   }
 
   .retro-button {
-    @apply px-4 py-2 bg-terminal-green text-terminal-black font-bold hover:bg-opacity-90 transition-all duration-200;
+    @apply px-4 py-2 bg-terminal-green text-terminal-black font-bold hover:bg-opacity-90 transition-all duration-200 rounded-md;
   }
 
   .terminal-window {
-    @apply border border-terminal-green rounded-lg p-4 bg-terminal-black bg-opacity-95;
+    @apply rounded-lg p-4 bg-terminal-black bg-opacity-95;
+    background: linear-gradient(135deg, rgba(155, 135, 245, 0.05) 0%, rgba(214, 188, 250, 0.02) 100%);
   }
 
   /* Hide email input initially */
