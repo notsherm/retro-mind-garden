@@ -103,7 +103,7 @@ export const Journal = () => {
           />
         </div>
 
-        <div className="terminal-window right-panel h-full overflow-hidden flex flex-col max-h-[calc(100vh-12rem)]">
+        <div className="terminal-window right-panel h-full overflow-auto">
           {!showAnalysis ? (
             <>
               <EntryList 
