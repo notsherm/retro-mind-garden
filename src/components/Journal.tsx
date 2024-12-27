@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { EntryList } from './EntryList';
 import { JournalInput } from './JournalInput';
 import { Analysis } from './Analysis';
-import { JournalNavBar } from './JournalNavBar';
+import { SearchPanel } from './SearchPanel';
 import { useJournalManager } from '@/hooks/useJournalManager';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,31 +29,6 @@ export const Journal = () => {
   const { toast } = useToast();
   const [selectedEntryId, setSelectedEntryId] = useState<string | undefined>();
 
-  const handleSearch = (query: string) => {
-    const results = sections.filter(section => 
-      section.title.toLowerCase().includes(query.toLowerCase()) ||
-      section.content.toLowerCase().includes(query.toLowerCase())
-    );
-
-    if (results.length > 0) {
-      const earliestEntry = results.reduce((earliest, current) => 
-        current.timestamp < earliest.timestamp ? current : earliest
-      );
-      setSelectedDate(earliestEntry.date);
-      toast({
-        title: "Entries found",
-        description: `Found ${results.length} matching entries`,
-        duration: 2000,
-      });
-    } else {
-      toast({
-        title: "No entries found",
-        description: "Try different search terms",
-        duration: 2000,
-      });
-    }
-  };
-
   const handleDelete = async () => {
     if (selectedEntryId) {
       await deleteEntry(selectedEntryId);
@@ -65,9 +40,9 @@ export const Journal = () => {
 
   return (
     <div className="min-h-screen h-screen p-4 bg-terminal-black relative">
-      <JournalNavBar 
-        onDateChange={setSelectedDate}
-        onSearch={handleSearch}
+      <SearchPanel 
+        sections={sections}
+        onDateSelect={setSelectedDate}
       />
       
       <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
