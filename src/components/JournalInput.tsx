@@ -29,12 +29,6 @@ export const JournalInput = ({
 
   return (
     <div className="space-y-4">
-      {isViewingPastDate && !selectedEntryId && (
-        <div className="text-terminal-green text-sm border border-terminal-green p-2 rounded">
-          Note: New entries will be added to Today's journal
-        </div>
-      )}
-      
       <Input
         type="text"
         placeholder="New section title..."
@@ -49,6 +43,12 @@ export const JournalInput = ({
         onChange={onContentChange}
         className="retro-input min-h-[calc(100vh-300px)] resize-none"
       />
+
+      {isViewingPastDate && !selectedEntryId && (
+        <div className="text-terminal-green text-sm">
+          Note: New entries will be added to Today's journal
+        </div>
+      )}
 
       <Button onClick={onSave} className="retro-button w-full">
         {selectedEntryId ? 'Update Entry' : 'Add Entry'}
