@@ -19,9 +19,12 @@ function App() {
         if (error) throw error;
         setSession(session);
       } catch (error: any) {
+        console.error("Session initialization error:", error);
+        // Clear session on error
+        setSession(null);
         toast({
           title: "Session Error",
-          description: error.message,
+          description: "Please sign in again",
           duration: 3000,
         });
       } finally {
@@ -33,11 +36,17 @@ function App() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log("Auth state changed:", _event);
       setSession(session);
       
       if (!session) {
         // Clear any cached data or state when session ends
         setLoading(false);
+        toast({
+          title: "Session Ended",
+          description: "Please sign in again to continue",
+          duration: 3000,
+        });
       }
     });
 
