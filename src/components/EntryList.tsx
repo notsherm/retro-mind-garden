@@ -25,6 +25,9 @@ export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }:
     return selectedDate === today;
   };
 
+  // Filter entries to only show entries from the selected date
+  const filteredEntries = entries.filter(entry => entry.date === selectedDate);
+
   return (
     <div className="h-full">
       <div className="flex items-center justify-between mb-4">
@@ -42,7 +45,7 @@ export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }:
       </div>
 
       <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
-        {entries.map((entry) => (
+        {filteredEntries.map((entry) => (
           <div 
             key={entry.id} 
             className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors"
