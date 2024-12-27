@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Switch } from "@/components/ui/switch";
 
 type Theme = 'classic-terminal' | 'light-terminal' | 'purple-dream' | 'ocean-breeze';
 
@@ -85,11 +84,12 @@ export const Settings = () => {
             <div className="space-y-4 border-t border-terminal-green pt-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-terminal-green font-semibold">Privacy Mode</h3>
-                <Switch
-                  checked={blurMode}
-                  onCheckedChange={handleBlurModeChange}
-                  className="bg-white h-6 w-11 rounded-full"
-                />
+                <Button
+                  onClick={() => handleBlurModeChange(!blurMode)}
+                  className={`retro-button ${blurMode ? 'bg-terminal-green text-terminal-black' : 'bg-terminal-black text-terminal-green border border-terminal-green'}`}
+                >
+                  {blurMode ? 'ON' : 'OFF'}
+                </Button>
               </div>
             </div>
 
