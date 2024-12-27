@@ -9,8 +9,6 @@ interface JournalInputProps {
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onSave: () => void;
-  isEditing: boolean;
-  onCancelEdit: () => void;
 }
 
 export const JournalInput = ({
@@ -18,9 +16,7 @@ export const JournalInput = ({
   content,
   onTitleChange,
   onContentChange,
-  onSave,
-  isEditing,
-  onCancelEdit
+  onSave
 }: JournalInputProps) => {
   return (
     <div className="space-y-4">
@@ -39,20 +35,9 @@ export const JournalInput = ({
         className="retro-input min-h-[calc(100vh-300px)] resize-none"
       />
 
-      {isEditing ? (
-        <div className="flex gap-2">
-          <Button onClick={onSave} className="retro-button flex-1">
-            Save Changes
-          </Button>
-          <Button onClick={onCancelEdit} className="retro-button flex-1">
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <Button onClick={onSave} className="retro-button w-full">
-          Add Entry
-        </Button>
-      )}
+      <Button onClick={onSave} className="retro-button w-full">
+        Add Entry
+      </Button>
     </div>
   );
 };

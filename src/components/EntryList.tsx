@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { EditHistory } from './EditHistory';
 
 interface Entry {
   id: string;
@@ -8,6 +9,7 @@ interface Entry {
   content: string;
   timestamp: number;
   date: string;
+  updated_at: string;
 }
 
 interface EntryListProps {
@@ -44,13 +46,14 @@ export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }:
           <div 
             key={entry.id} 
             className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors"
-            onClick={() => isCurrentDate() && onEntryClick(entry)}
+            onClick={() => onEntryClick(entry)}
           >
             <h3 className="text-lg font-bold mb-2">{entry.title}</h3>
             <p className="whitespace-pre-wrap text-terminal-gray">{entry.content}</p>
             <div className="text-xs text-terminal-gray mt-2">
               {new Date(entry.timestamp).toLocaleString()}
             </div>
+            <EditHistory updatedAt={entry.updated_at} />
           </div>
         ))}
       </div>

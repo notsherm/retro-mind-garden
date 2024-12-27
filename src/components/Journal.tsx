@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EntryList } from './EntryList';
 import { JournalInput } from './JournalInput';
 import { HamburgerMenu } from './HamburgerMenu';
-import { Button } from "@/components/ui/button";
+import { EditHistory } from './EditHistory';
 
 interface Section {
   id: string;
@@ -13,6 +13,7 @@ interface Section {
   timestamp: number;
   date: string;
   user_id: string;
+  updated_at: string;
 }
 
 export const Journal = () => {
@@ -21,7 +22,6 @@ export const Journal = () => {
   const [newContent, setNewContent] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [editingSection, setEditingSection] = useState<Section | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const { toast } = useToast();
 
@@ -54,7 +54,8 @@ export const Journal = () => {
         content: entry.content,
         timestamp: entry.timestamp,
         date: entry.date,
-        user_id: entry.user_id
+        user_id: entry.user_id,
+        updated_at: entry.updated_at
       })));
     }
   };
@@ -79,11 +80,12 @@ export const Journal = () => {
       return;
     }
 
+    const currentDate = new Date().toISOString().split('T')[0];
     const newSection = {
       title: newSectionTitle,
       content: newContent,
       timestamp: Date.now(),
-      date: new Date().toISOString().split('T')[0],
+      date: currentDate,
       user_id: user.id
     };
 
@@ -115,29 +117,21 @@ export const Journal = () => {
     await supabase.auth.signOut();
   };
 
-  const startEditing = (section: Section) => {
-    setEditingSection(section);
-    setNewSectionTitle(section.title);
-    setNewContent(section.content);
-  };
-
-  const saveEdit = async () => {
-    if (!editingSection) return;
-
+  const updateEntry = async (section: Section) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     const updatedSection = {
-      ...editingSection,
+      ...section,
       title: newSectionTitle,
       content: newContent,
-      user_id: user.id
+      updated_at: new Date().toISOString()
     };
 
     const { error } = await supabase
       .from('journal_entries')
       .update(updatedSection)
-      .eq('id', editingSection.id);
+      .eq('id', section.id);
 
     if (error) {
       toast({
@@ -149,7 +143,6 @@ export const Journal = () => {
     }
 
     await loadEntries();
-    setEditingSection(null);
     setNewSectionTitle("");
     setNewContent("");
 
@@ -158,12 +151,6 @@ export const Journal = () => {
       description: "Your changes have been saved",
       duration: 2000,
     });
-  };
-
-  const cancelEdit = () => {
-    setEditingSection(null);
-    setNewSectionTitle("");
-    setNewContent("");
   };
 
   const navigateDate = (direction: 'prev' | 'next') => {
@@ -191,7 +178,7 @@ export const Journal = () => {
     <div className="min-h-screen h-screen p-4 bg-terminal-black relative">
       <HamburgerMenu
         onSignOut={handleSignOut}
-        onSearch={() => setShowSearch(true)}
+        onSearch={() => {}}
         onCalendar={() => {
           const date = prompt('Enter date (YYYY-MM-DD)');
           if (date) setSelectedDate(date);
@@ -199,31 +186,18 @@ export const Journal = () => {
       />
       
       <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
-        {/* Left Column - Input Area or Historical Entry */}
+        {/* Left Column - Always visible input area */}
         <div className="terminal-window h-full">
-          {isCurrentDate() ? (
-            <JournalInput
-              title={newSectionTitle}
-              content={newContent}
-              onTitleChange={(e) => setNewSectionTitle(e.target.value)}
-              onContentChange={(e) => setNewContent(e.target.value)}
-              onSave={editingSection ? saveEdit : addNewSection}
-              isEditing={!!editingSection}
-              onCancelEdit={cancelEdit}
-            />
-          ) : (
-            <div className="space-y-4">
-              {sections.map((section) => (
-                <div key={section.id} className="border border-terminal-green p-4 rounded-lg">
-                  <h3 className="text-lg font-bold mb-2">{section.title}</h3>
-                  <p className="whitespace-pre-wrap text-terminal-gray">{section.content}</p>
-                </div>
-              ))}
-            </div>
-          )}
+          <JournalInput
+            title={newSectionTitle}
+            content={newContent}
+            onTitleChange={(e) => setNewSectionTitle(e.target.value)}
+            onContentChange={(e) => setNewContent(e.target.value)}
+            onSave={addNewSection}
+          />
         </div>
 
-        {/* Right Column - Entries Display & Analysis */}
+        {/* Right Column - Historical entries & Analysis */}
         <div className="terminal-window h-full">
           {!showAnalysis ? (
             <>
@@ -231,11 +205,19 @@ export const Journal = () => {
                 entries={sections}
                 selectedDate={selectedDate}
                 onDateChange={navigateDate}
-                onEntryClick={startEditing}
+                onEntryClick={(entry) => {
+                  setNewSectionTitle(entry.title);
+                  setNewContent(entry.content);
+                  toast({
+                    title: "Editing entry",
+                    description: "You are now editing a past entry",
+                    duration: 2000,
+                  });
+                }}
               />
               
-              {sections.length > 0 && isCurrentDate() && (
-                <Button
+              {sections.length > 0 && (
+                <button
                   onClick={() => {
                     setShowAnalysis(true);
                     setAnalysis("Based on your entries, it seems you're feeling reflective today. Your writing shows a pattern of introspective thinking...");
@@ -248,7 +230,7 @@ export const Journal = () => {
                   className="retro-button w-full mt-4"
                 >
                   Analyze Entries
-                </Button>
+                </button>
               )}
             </>
           ) : (
@@ -256,31 +238,15 @@ export const Journal = () => {
               <div className="animate-typing overflow-hidden whitespace-pre-wrap border-r-2 border-terminal-green">
                 {analysis}
               </div>
-              <Button
+              <button
                 onClick={() => setShowAnalysis(false)}
                 className="retro-button w-full"
               >
                 Back to Entries
-              </Button>
+              </button>
             </div>
           )}
         </div>
-      </div>
-
-      {/* Auto-save indicator */}
-      <div className="fixed bottom-4 right-4">
-        <Button
-          className="retro-button"
-          onClick={() => {
-            toast({
-              title: "Saved",
-              description: "Your journal is backed up and secure",
-              duration: 2000,
-            });
-          }}
-        >
-          Save
-        </Button>
       </div>
     </div>
   );
