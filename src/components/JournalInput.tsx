@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { X } from "lucide-react";
 
 interface JournalInputProps {
   title: string;
@@ -15,6 +15,7 @@ interface JournalInputProps {
   onDelete?: () => void;
   isCreating: boolean;
   onStartCreating: () => void;
+  onCancel: () => void;
 }
 
 export const JournalInput = ({
@@ -27,25 +28,26 @@ export const JournalInput = ({
   onSave,
   onDelete,
   isCreating,
-  onStartCreating
+  onCancel
 }: JournalInputProps) => {
   const today = new Date().toISOString().split('T')[0];
   const isViewingPastDate = selectedDate !== today;
 
-  if (!isCreating) {
-    return (
-      <Button 
-        onClick={onStartCreating}
-        className="w-full bg-transparent border border-terminal-green text-terminal-green hover:bg-terminal-green/10 transition-colors flex items-center gap-2"
-      >
-        <Plus className="h-4 w-4" />
-        New Entry
-      </Button>
-    );
-  }
-
   return (
-    <div className="w-[600px] space-y-4">
+    <div className="space-y-4 bg-card p-4 rounded-lg border border-terminal-green">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-terminal-green font-bold">
+          {selectedEntryId ? 'Edit Entry' : 'New Entry'}
+        </h3>
+        <Button
+          onClick={onCancel}
+          variant="ghost"
+          className="text-terminal-green hover:bg-terminal-green/10"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+
       <Input
         type="text"
         placeholder="New section title..."
@@ -58,7 +60,7 @@ export const JournalInput = ({
         placeholder="Write your thoughts..."
         value={content}
         onChange={onContentChange}
-        className="retro-input min-h-[300px] resize-none"
+        className="retro-input min-h-[200px] resize-none"
       />
 
       {isViewingPastDate && !selectedEntryId && (
@@ -67,19 +69,21 @@ export const JournalInput = ({
         </div>
       )}
 
-      <Button onClick={onSave} className="retro-button w-full">
-        {selectedEntryId ? 'Update Entry' : 'Add Entry'}
-      </Button>
-
-      {selectedEntryId && (
-        <Button 
-          onClick={onDelete} 
-          variant="destructive" 
-          className="retro-button w-full"
-        >
-          Delete Entry
+      <div className="flex gap-2">
+        <Button onClick={onSave} className="retro-button flex-1">
+          {selectedEntryId ? 'Update Entry' : 'Add Entry'}
         </Button>
-      )}
+
+        {selectedEntryId && (
+          <Button 
+            onClick={onDelete} 
+            variant="destructive" 
+            className="retro-button"
+          >
+            Delete Entry
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

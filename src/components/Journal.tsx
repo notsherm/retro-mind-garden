@@ -80,6 +80,13 @@ export const Journal = () => {
     setNewContent('');
   };
 
+  const handleCancel = () => {
+    setIsCreatingEntry(false);
+    setNewSectionTitle('');
+    setNewContent('');
+    setSelectedEntryId(undefined);
+  };
+
   if (!sections) {
     return (
       <div className="min-h-screen bg-terminal-black flex items-center justify-center">
@@ -97,23 +104,6 @@ export const Journal = () => {
       
       <div className="max-w-7xl mx-auto pt-16 px-4 pb-4">
         <div className="flex flex-col items-center">
-          {isCreatingEntry && (
-            <div className="w-[600px] mb-6">
-              <JournalInput
-                title={newSectionTitle}
-                content={newContent}
-                selectedDate={selectedDate}
-                selectedEntryId={selectedEntryId}
-                onTitleChange={(e) => setNewSectionTitle(e.target.value)}
-                onContentChange={(e) => setNewContent(e.target.value)}
-                onSave={handleSave}
-                onDelete={handleDelete}
-                isCreating={isCreatingEntry}
-                onStartCreating={() => setIsCreatingEntry(true)}
-              />
-            </div>
-          )}
-
           <div className="terminal-window right-panel w-[600px] z-[1] relative">
             {!showAnalysis ? (
               <>
@@ -129,6 +119,14 @@ export const Journal = () => {
                   }}
                   onStartCreating={() => setIsCreatingEntry(true)}
                   isCreating={isCreatingEntry}
+                  title={newSectionTitle}
+                  content={newContent}
+                  selectedEntryId={selectedEntryId}
+                  onTitleChange={(e) => setNewSectionTitle(e.target.value)}
+                  onContentChange={(e) => setNewContent(e.target.value)}
+                  onSave={handleSave}
+                  onDelete={handleDelete}
+                  onCancel={handleCancel}
                 />
                 
                 <Analysis

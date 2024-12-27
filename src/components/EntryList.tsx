@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { EditHistory } from './EditHistory';
+import { JournalInput } from './JournalInput';
 
 interface Entry {
   id: string;
@@ -19,6 +20,15 @@ interface EntryListProps {
   onEntryClick: (entry: Entry) => void;
   onStartCreating: () => void;
   isCreating: boolean;
+  // Add new props for input handling
+  title: string;
+  content: string;
+  selectedEntryId?: string;
+  onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onSave: () => void;
+  onDelete?: () => void;
+  onCancel: () => void;
 }
 
 export const EntryList = ({ 
@@ -27,7 +37,15 @@ export const EntryList = ({
   onDateChange, 
   onEntryClick,
   onStartCreating,
-  isCreating
+  isCreating,
+  title,
+  content,
+  selectedEntryId,
+  onTitleChange,
+  onContentChange,
+  onSave,
+  onDelete,
+  onCancel
 }: EntryListProps) => {
   const isCurrentDate = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -53,7 +71,7 @@ export const EntryList = ({
         </Button>
       </div>
 
-      {!isCreating && (
+      {!isCreating ? (
         <Button 
           onClick={onStartCreating}
           className="w-full mb-6 bg-transparent border border-terminal-green text-terminal-green hover:bg-terminal-green/10 transition-colors flex items-center gap-2"
@@ -61,6 +79,22 @@ export const EntryList = ({
           <Plus className="h-4 w-4" />
           New Entry
         </Button>
+      ) : (
+        <div className="mb-6">
+          <JournalInput
+            title={title}
+            content={content}
+            selectedDate={selectedDate}
+            selectedEntryId={selectedEntryId}
+            onTitleChange={onTitleChange}
+            onContentChange={onContentChange}
+            onSave={onSave}
+            onDelete={onDelete}
+            isCreating={isCreating}
+            onStartCreating={onStartCreating}
+            onCancel={onCancel}
+          />
+        </div>
       )}
 
       <div className="space-y-6">
