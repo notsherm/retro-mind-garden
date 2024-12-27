@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EntryList } from './EntryList';
 import { JournalInput } from './JournalInput';
 import { HamburgerMenu } from './HamburgerMenu';
+import { Loader2 } from "lucide-react";
 
 interface Section {
   id: string;
@@ -15,12 +16,18 @@ interface Section {
   updated_at: string;
 }
 
+interface AnalysisCache {
+  [key: string]: string;
+}
+
 export const Journal = () => {
   const [sections, setSections] = useState<Section[]>([]);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [newContent, setNewContent] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisCache, setAnalysisCache] = useState<AnalysisCache>({});
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const { toast } = useToast();
 
@@ -168,7 +175,15 @@ export const Journal = () => {
   };
 
   const analyzeEntries = async () => {
+    // Check if we have cached analysis for this date
+    if (analysisCache[selectedDate]) {
+      setAnalysis(analysisCache[selectedDate]);
+      setShowAnalysis(true);
+      return;
+    }
+
     try {
+      setIsAnalyzing(true);
       const { data: response, error } = await supabase.functions.invoke('analyze-entries', {
         body: { entries: sections }
       });
@@ -181,6 +196,12 @@ export const Journal = () => {
         });
         return;
       }
+
+      // Cache the analysis result
+      setAnalysisCache(prev => ({
+        ...prev,
+        [selectedDate]: response.analysis
+      }));
 
       setAnalysis(response.analysis);
       setShowAnalysis(true);
@@ -195,6 +216,8 @@ export const Journal = () => {
         description: "Failed to analyze entries",
         duration: 2000,
       });
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -241,9 +264,19 @@ export const Journal = () => {
               {sections.length > 0 && (
                 <button
                   onClick={analyzeEntries}
-                  className="retro-button mt-4"
+                  disabled={isAnalyzing}
+                  className={`retro-button mt-4 flex items-center justify-center gap-2 ${
+                    isAnalyzing ? 'opacity-70' : ''
+                  }`}
                 >
-                  Analyze Entries
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    'Analyze Entries'
+                  )}
                 </button>
               )}
             </>
