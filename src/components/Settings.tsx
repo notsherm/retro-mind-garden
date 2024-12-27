@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings as SettingsIcon, LogOut, HelpCircle, Eye, EyeOff } from 'lucide-react';
+import { Settings as SettingsIcon, LogOut, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -83,12 +83,9 @@ export const Settings = () => {
             </div>
 
             <div className="space-y-4 border-t border-terminal-green pt-4">
-              <h3 className="text-terminal-green font-semibold">Privacy</h3>
+              <h3 className="text-terminal-green font-semibold">Privacy Mode</h3>
               <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <div className="text-sm text-terminal-green">Privacy Mode</div>
-                  <div className="text-xs text-terminal-gray">Blur journal entries in public</div>
-                </div>
+                <div className="text-xs text-terminal-gray">Blur journal entries in public</div>
                 <Switch
                   checked={blurMode}
                   onCheckedChange={handleBlurModeChange}
