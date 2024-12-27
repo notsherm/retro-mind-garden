@@ -48,12 +48,12 @@ export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }:
         {filteredEntries.map((entry) => (
           <div 
             key={entry.id} 
-            className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors bg-[#1A1F2C]"
+            className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors bg-card"
             onClick={() => onEntryClick(entry)}
           >
-            <h3 className="text-lg font-bold mb-2">{entry.title}</h3>
-            <p className="whitespace-pre-wrap text-terminal-gray">{entry.content}</p>
-            <div className="text-xs text-terminal-gray mt-2">
+            <h3 className="text-lg font-bold mb-2 text-terminal-green">{entry.title}</h3>
+            <p className="whitespace-pre-wrap text-foreground">{entry.content}</p>
+            <div className="text-xs text-muted-foreground mt-2">
               {new Date(entry.timestamp).toLocaleString()}
             </div>
             <EditHistory updatedAt={entry.updated_at} />
