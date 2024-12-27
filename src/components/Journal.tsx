@@ -3,12 +3,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Section {
   id: string;
   title: string;
   content: string;
   timestamp: number;
+  date: string; // Added date field for grouping entries by day
 }
 
 export const Journal = () => {
@@ -17,6 +19,8 @@ export const Journal = () => {
   const [newContent, setNewContent] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [editingSection, setEditingSection] = useState<Section | null>(null);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -41,13 +45,13 @@ export const Journal = () => {
       title: newSectionTitle,
       content: newContent,
       timestamp: Date.now(),
+      date: new Date().toISOString().split('T')[0],
     };
 
     const updatedSections = [...sections, newSection];
     setSections(updatedSections);
     localStorage.setItem('journal-sections', JSON.stringify(updatedSections));
     
-    // Reset inputs
     setNewSectionTitle("");
     setNewContent("");
 
@@ -58,9 +62,42 @@ export const Journal = () => {
     });
   };
 
+  const startEditing = (section: Section) => {
+    setEditingSection(section);
+    setNewSectionTitle(section.title);
+    setNewContent(section.content);
+  };
+
+  const saveEdit = () => {
+    if (!editingSection) return;
+
+    const updatedSections = sections.map(section => 
+      section.id === editingSection.id 
+        ? { ...section, title: newSectionTitle, content: newContent }
+        : section
+    );
+
+    setSections(updatedSections);
+    localStorage.setItem('journal-sections', JSON.stringify(updatedSections));
+    setEditingSection(null);
+    setNewSectionTitle("");
+    setNewContent("");
+
+    toast({
+      title: "Entry updated",
+      description: "Your changes have been saved",
+      duration: 2000,
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingSection(null);
+    setNewSectionTitle("");
+    setNewContent("");
+  };
+
   const analyzeEntries = () => {
     setShowAnalysis(true);
-    // Mock AI analysis (replace with actual AI integration)
     setAnalysis("Based on your entries, it seems you're feeling reflective today. Your writing shows a pattern of introspective thinking...");
     
     toast({
@@ -69,6 +106,23 @@ export const Journal = () => {
       duration: 2000,
     });
   };
+
+  const navigateDate = (direction: 'prev' | 'next') => {
+    const currentDate = new Date(selectedDate);
+    const newDate = new Date(currentDate);
+    
+    if (direction === 'prev') {
+      newDate.setDate(currentDate.getDate() - 1);
+    } else {
+      newDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    setSelectedDate(newDate.toISOString().split('T')[0]);
+  };
+
+  const filteredSections = sections.filter(
+    section => section.date === selectedDate
+  );
 
   return (
     <div className="min-h-screen p-4 bg-terminal-black">
@@ -91,21 +145,43 @@ export const Journal = () => {
               className="retro-input min-h-[300px] resize-none"
             />
 
-            <Button
-              onClick={addNewSection}
-              className="retro-button w-full"
-            >
-              Add Entry
-            </Button>
+            {editingSection ? (
+              <div className="flex gap-2">
+                <Button onClick={saveEdit} className="retro-button flex-1">
+                  Save Changes
+                </Button>
+                <Button onClick={cancelEdit} className="retro-button flex-1">
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <Button onClick={addNewSection} className="retro-button w-full">
+                Add Entry
+              </Button>
+            )}
           </div>
         </div>
 
         {/* Right Column - Entries Display & Analysis */}
         <div className="terminal-window">
+          <div className="flex items-center justify-between mb-4">
+            <Button onClick={() => navigateDate('prev')} className="retro-button">
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-terminal-green">{selectedDate}</span>
+            <Button onClick={() => navigateDate('next')} className="retro-button">
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+
           {!showAnalysis ? (
             <div className="space-y-6">
-              {sections.map((section) => (
-                <div key={section.id} className="border border-terminal-green p-4 rounded-lg">
+              {filteredSections.map((section) => (
+                <div 
+                  key={section.id} 
+                  className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors"
+                  onClick={() => startEditing(section)}
+                >
                   <h3 className="text-lg font-bold mb-2">{section.title}</h3>
                   <p className="whitespace-pre-wrap text-terminal-gray">{section.content}</p>
                   <div className="text-xs text-terminal-gray mt-2">
@@ -114,7 +190,7 @@ export const Journal = () => {
                 </div>
               ))}
               
-              {sections.length > 0 && (
+              {filteredSections.length > 0 && (
                 <Button
                   onClick={analyzeEntries}
                   className="retro-button w-full"
