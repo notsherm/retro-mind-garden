@@ -44,10 +44,25 @@
   }
 
   .retro-button {
-    @apply px-4 py-2 bg-terminal-green text-terminal-black font-bold hover:bg-opacity-90 transition-all duration-200 rounded;
+    @apply px-4 py-2 bg-terminal-green text-terminal-black font-bold hover:bg-opacity-90 transition-all duration-200;
   }
 
   .terminal-window {
     @apply border border-terminal-green rounded-lg p-4 bg-terminal-black bg-opacity-95;
+  }
+
+  /* Hide email input initially */
+  .supabase-auth-ui_ui-container form > div:first-child {
+    @apply hidden;
+  }
+
+  /* Style the auth container */
+  .supabase-auth-ui_ui-container {
+    @apply space-y-4;
+  }
+
+  /* Add typing animation */
+  .supabase-auth-ui_ui-label {
+    @apply overflow-hidden whitespace-nowrap border-r-4 border-terminal-green animate-typing;
   }
 }
