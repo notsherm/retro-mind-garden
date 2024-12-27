@@ -209,9 +209,9 @@ export const useJournalManager = () => {
     setShowAnalysis,
     isAnalyzing,
     selectedDate,
+    setSelectedDate,
     addNewSection,
     updateEntry,
     analyzeEntries,
     navigateDate
   };
-};
