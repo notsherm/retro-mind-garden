@@ -9,17 +9,50 @@ import { useToast } from "@/hooks/use-toast";
 const Auth = () => {
   const navigate = useNavigate();
   const [showSignUp, setShowSignUp] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
+    // Check initial session
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (session) {
+          navigate("/");
+        }
+      } catch (error: any) {
+        toast({
+          title: "Session Error",
+          description: error.message,
+          duration: 3000,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
         navigate("/");
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-terminal-black flex items-center justify-center">
+        <div className="text-terminal-green">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-terminal-black flex flex-col items-center justify-center p-4">
