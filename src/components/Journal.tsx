@@ -75,6 +75,7 @@ export const Journal = () => {
           <JournalInput
             title={newSectionTitle}
             content={newContent}
+            selectedDate={selectedDate}
             selectedEntryId={selectedEntryId}
             onTitleChange={(e) => setNewSectionTitle(e.target.value)}
             onContentChange={(e) => setNewContent(e.target.value)}

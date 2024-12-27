@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface JournalInputProps {
   title: string;
   content: string;
+  selectedDate: string;
   selectedEntryId?: string;
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -16,14 +17,24 @@ interface JournalInputProps {
 export const JournalInput = ({
   title,
   content,
+  selectedDate,
   selectedEntryId,
   onTitleChange,
   onContentChange,
   onSave,
   onDelete
 }: JournalInputProps) => {
+  const today = new Date().toISOString().split('T')[0];
+  const isViewingPastDate = selectedDate !== today;
+
   return (
     <div className="space-y-4">
+      {isViewingPastDate && !selectedEntryId && (
+        <div className="text-terminal-green text-sm border border-terminal-green p-2 rounded">
+          Note: New entries will be added to Today's journal
+        </div>
+      )}
+      
       <Input
         type="text"
         placeholder="New section title..."
