@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -58,9 +59,12 @@ export const Settings = () => {
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="terminal-window">
+        <DialogContent className="terminal-window" aria-describedby="settings-description">
           <DialogHeader>
             <DialogTitle className="text-terminal-green text-xl font-bold mb-4">Settings</DialogTitle>
+            <DialogDescription id="settings-description" className="text-terminal-gray">
+              Customize your journal experience with themes and privacy options
+            </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-6">
@@ -115,9 +119,12 @@ export const Settings = () => {
       </Dialog>
 
       <Dialog open={isHelpOpen} onOpenChange={setIsHelpOpen}>
-        <DialogContent className="terminal-window max-h-[80vh] overflow-y-auto">
+        <DialogContent className="terminal-window max-h-[80vh] overflow-y-auto" aria-describedby="help-description">
           <DialogHeader>
             <DialogTitle className="text-terminal-green text-xl font-bold mb-4">Help & Features</DialogTitle>
+            <DialogDescription id="help-description" className="text-terminal-gray">
+              Learn how to use all the features of your retro journal
+            </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-6 text-terminal-green">
