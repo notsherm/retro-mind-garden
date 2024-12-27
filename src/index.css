@@ -31,6 +31,10 @@
     @apply border-border;
   }
 
+  html, body, #root {
+    @apply h-full;
+  }
+
   body {
     @apply bg-terminal-black text-terminal-green font-mono antialiased;
   }

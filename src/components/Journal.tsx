@@ -3,14 +3,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { EntryList } from './EntryList';
+import { SearchPanel } from './SearchPanel';
 
 interface Section {
   id: string;
   title: string;
   content: string;
   timestamp: number;
-  date: string; // Added date field for grouping entries by day
+  date: string;
 }
 
 export const Journal = () => {
@@ -96,17 +97,6 @@ export const Journal = () => {
     setNewContent("");
   };
 
-  const analyzeEntries = () => {
-    setShowAnalysis(true);
-    setAnalysis("Based on your entries, it seems you're feeling reflective today. Your writing shows a pattern of introspective thinking...");
-    
-    toast({
-      title: "Analysis complete",
-      description: "AI has analyzed your entries",
-      duration: 2000,
-    });
-  };
-
   const navigateDate = (direction: 'prev' | 'next') => {
     const currentDate = new Date(selectedDate);
     const newDate = new Date(currentDate);
@@ -125,10 +115,12 @@ export const Journal = () => {
   );
 
   return (
-    <div className="min-h-screen p-4 bg-terminal-black">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="min-h-screen h-screen p-4 bg-terminal-black">
+      <SearchPanel sections={sections} onDateSelect={setSelectedDate} />
+      
+      <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left Column - Input Area */}
-        <div className="terminal-window">
+        <div className="terminal-window h-full">
           <div className="space-y-4">
             <Input
               type="text"
@@ -142,7 +134,7 @@ export const Journal = () => {
               placeholder="Write your thoughts..."
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
-              className="retro-input min-h-[300px] resize-none"
+              className="retro-input min-h-[calc(100vh-300px)] resize-none"
             />
 
             {editingSection ? (
@@ -163,42 +155,33 @@ export const Journal = () => {
         </div>
 
         {/* Right Column - Entries Display & Analysis */}
-        <div className="terminal-window">
-          <div className="flex items-center justify-between mb-4">
-            <Button onClick={() => navigateDate('prev')} className="retro-button">
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="text-terminal-green">{selectedDate}</span>
-            <Button onClick={() => navigateDate('next')} className="retro-button">
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-
+        <div className="terminal-window h-full">
           {!showAnalysis ? (
-            <div className="space-y-6">
-              {filteredSections.map((section) => (
-                <div 
-                  key={section.id} 
-                  className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors"
-                  onClick={() => startEditing(section)}
-                >
-                  <h3 className="text-lg font-bold mb-2">{section.title}</h3>
-                  <p className="whitespace-pre-wrap text-terminal-gray">{section.content}</p>
-                  <div className="text-xs text-terminal-gray mt-2">
-                    {new Date(section.timestamp).toLocaleString()}
-                  </div>
-                </div>
-              ))}
+            <>
+              <EntryList 
+                entries={filteredSections}
+                selectedDate={selectedDate}
+                onDateChange={navigateDate}
+                onEntryClick={startEditing}
+              />
               
               {filteredSections.length > 0 && (
                 <Button
-                  onClick={analyzeEntries}
-                  className="retro-button w-full"
+                  onClick={() => {
+                    setShowAnalysis(true);
+                    setAnalysis("Based on your entries, it seems you're feeling reflective today. Your writing shows a pattern of introspective thinking...");
+                    toast({
+                      title: "Analysis complete",
+                      description: "AI has analyzed your entries",
+                      duration: 2000,
+                    });
+                  }}
+                  className="retro-button w-full mt-4"
                 >
                   Analyze Entries
                 </Button>
               )}
-            </div>
+            </>
           ) : (
             <div className="space-y-4">
               <div className="animate-typing overflow-hidden whitespace-pre-wrap border-r-2 border-terminal-green">
