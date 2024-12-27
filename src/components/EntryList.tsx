@@ -44,7 +44,7 @@ export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }:
         </Button>
       </div>
 
-      <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-16rem)]">
+      <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-12rem)]">
         {filteredEntries.map((entry) => (
           <div 
             key={entry.id} 

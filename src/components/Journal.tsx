@@ -63,7 +63,6 @@ export const Journal = () => {
     }
   };
 
-  // Add error boundary wrapper
   if (!sections) {
     return (
       <div className="min-h-screen bg-terminal-black flex items-center justify-center">
@@ -103,7 +102,7 @@ export const Journal = () => {
           />
         </div>
 
-        <div className="terminal-window right-panel h-full overflow-auto">
+        <div className="terminal-window right-panel h-full overflow-hidden flex flex-col">
           {!showAnalysis ? (
             <>
               <EntryList 
