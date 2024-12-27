@@ -95,9 +95,9 @@ export const Journal = () => {
         onSearch={handleSearch}
       />
       
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16 px-4 pb-4">
-        <div className="relative">
-          <div className="terminal-window left-panel sticky top-20 z-[2] bg-terminal-black">
+      <div className="max-w-7xl mx-auto pt-16 px-4 pb-4">
+        <div className="flex flex-col items-center">
+          <div className="w-[600px] mb-6">
             <JournalInput
               title={newSectionTitle}
               content={newContent}
@@ -111,23 +111,32 @@ export const Journal = () => {
               onStartCreating={() => setIsCreatingEntry(true)}
             />
           </div>
-        </div>
 
-        <div className="terminal-window right-panel z-[1] relative">
-          {!showAnalysis ? (
-            <>
-              <EntryList 
-                entries={sections}
-                selectedDate={selectedDate}
-                onDateChange={navigateDate}
-                onEntryClick={(entry) => {
-                  setNewSectionTitle(entry.title);
-                  setNewContent(entry.content);
-                  setSelectedEntryId(entry.id);
-                  setIsCreatingEntry(true);
-                }}
-              />
-              
+          <div className="terminal-window right-panel w-[600px] z-[1] relative">
+            {!showAnalysis ? (
+              <>
+                <EntryList 
+                  entries={sections}
+                  selectedDate={selectedDate}
+                  onDateChange={navigateDate}
+                  onEntryClick={(entry) => {
+                    setNewSectionTitle(entry.title);
+                    setNewContent(entry.content);
+                    setSelectedEntryId(entry.id);
+                    setIsCreatingEntry(true);
+                  }}
+                />
+                
+                <Analysis
+                  sections={sections}
+                  isAnalyzing={isAnalyzing}
+                  onAnalyze={analyzeEntries}
+                  analysis={analysis}
+                  showAnalysis={showAnalysis}
+                  onBack={() => setShowAnalysis(false)}
+                />
+              </>
+            ) : (
               <Analysis
                 sections={sections}
                 isAnalyzing={isAnalyzing}
@@ -136,17 +145,8 @@ export const Journal = () => {
                 showAnalysis={showAnalysis}
                 onBack={() => setShowAnalysis(false)}
               />
-            </>
-          ) : (
-            <Analysis
-              sections={sections}
-              isAnalyzing={isAnalyzing}
-              onAnalyze={analyzeEntries}
-              analysis={analysis}
-              showAnalysis={showAnalysis}
-              onBack={() => setShowAnalysis(false)}
-            />
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
