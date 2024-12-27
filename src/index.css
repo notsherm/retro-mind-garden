@@ -5,111 +5,6 @@
 @tailwind utilities;
 
 @layer base {
-  :root,
-  [data-theme="classic-terminal"] {
-    --terminal-green: #4AF626;
-    --terminal-black: #221F26;
-    --terminal-gray: #8E9196;
-    
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 3.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: transparent;
-    --input: transparent;
-    --ring: 224.3 76.3% 48%;
-  }
-
-  [data-theme="light-terminal"] {
-    --terminal-green: #2E7D32;
-    --terminal-black: #F6F6F7;
-    --terminal-gray: #555555;
-    
-    --background: 0 0% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 96%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 98%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-  }
-
-  [data-theme="purple-dream"] {
-    --terminal-green: #9b87f5;
-    --terminal-black: #1A1F2C;
-    --terminal-gray: #8E9196;
-    
-    --background: 250 43% 15%;
-    --foreground: 250 43% 95%;
-    --card: 250 43% 12%;
-    --card-foreground: 250 43% 95%;
-    --popover: 250 43% 15%;
-    --popover-foreground: 250 43% 95%;
-    --primary: 250 95% 76%;
-    --primary-foreground: 250 43% 15%;
-    --secondary: 250 43% 25%;
-    --secondary-foreground: 250 43% 95%;
-    --muted: 250 43% 25%;
-    --muted-foreground: 250 43% 70%;
-    --accent: 250 43% 25%;
-    --accent-foreground: 250 43% 95%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 250 43% 95%;
-    --border: 250 43% 25%;
-    --input: 250 43% 25%;
-    --ring: 250 95% 76%;
-  }
-
-  [data-theme="ocean-breeze"] {
-    --terminal-green: #0EA5E9;
-    --terminal-black: #0F172A;
-    --terminal-gray: #64748B;
-    
-    --background: 217 33% 17%;
-    --foreground: 210 40% 98%;
-    --card: 217 33% 15%;
-    --card-foreground: 210 40% 98%;
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 199 89% 48%;
-    --primary-foreground: 217 33% 17%;
-    --secondary: 217 33% 27%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 27%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217 33% 27%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: transparent;
-    --input: transparent;
-    --ring: 199 89% 48%;
-  }
-
   * {
     @apply border-border;
   }
@@ -133,9 +28,18 @@
   }
 
   .right-panel {
-    @apply bg-terminal-black border border-terminal-green;
+    @apply bg-terminal-black border border-terminal-green overflow-y-auto;
     transform: translate3d(0, 0, 0);
     will-change: transform;
+    height: calc(100vh - 5rem);
+    max-height: calc(100vh - 5rem);
+  }
+
+  @media (max-width: 640px) {
+    .right-panel {
+      height: calc(100vh - 4rem);
+      max-height: calc(100vh - 4rem);
+    }
   }
 
   .retro-input {
@@ -153,28 +57,4 @@
     box-shadow: 0 0 10px rgba(74, 246, 38, 0.2);
   }
 
-  [data-blur-mode="enabled"] .journal-entry {
-    @apply blur-sm transition-all duration-200;
-  }
-
-  [data-blur-mode="enabled"] .journal-entry:active,
-  [data-blur-mode="enabled"] .journal-entry:focus {
-    @apply blur-none;
-  }
-
-  [data-blur-mode="enabled"] .new-entry-form {
-    @apply blur-none;
-  }
-
-  .supabase-auth-ui_ui-container form > div:first-child {
-    @apply hidden;
-  }
-
-  .supabase-auth-ui_ui-container {
-    @apply space-y-4;
-  }
-
-  .supabase-auth-ui_ui-label {
-    @apply overflow-hidden whitespace-nowrap border-r-4 border-terminal-green animate-typing;
-  }
 }
