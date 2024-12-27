@@ -70,8 +70,8 @@ export const Journal = () => {
         onSearch={handleSearch}
       />
       
-      <div className="h-[calc(100vh-6rem)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
-        <div className="terminal-window h-full overflow-hidden flex flex-col">
+      <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
+        <div className="terminal-window h-full">
           <JournalInput
             title={newSectionTitle}
             content={newContent}
@@ -108,16 +108,14 @@ export const Journal = () => {
                 }}
               />
               
-              <button
-                onClick={() => {
-                  analyzeEntries();
-                  setShowAnalysis(true);
-                }}
-                className="retro-button mt-4"
-                disabled={isAnalyzing || sections.length === 0}
-              >
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Entries'}
-              </button>
+              <Analysis
+                sections={sections}
+                isAnalyzing={isAnalyzing}
+                onAnalyze={analyzeEntries}
+                analysis={analysis}
+                showAnalysis={showAnalysis}
+                onBack={() => setShowAnalysis(false)}
+              />
             </>
           ) : (
             <Analysis
