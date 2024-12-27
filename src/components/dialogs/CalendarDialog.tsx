@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { format, parse } from 'date-fns';
+import { Button } from "@/components/ui/button";
 
 interface CalendarDialogProps {
   open: boolean;
@@ -19,6 +20,13 @@ export const CalendarDialog = ({ open, onOpenChange, onDateSelect }: CalendarDia
     // Convert from HTML date format (YYYY-MM-DD) to desired format (MM/DD/YYYY)
     const date = new Date(e.target.value);
     const formattedDate = format(date, 'MM/dd/yyyy');
+    onDateSelect(formattedDate);
+    onOpenChange(false);
+  };
+
+  const handleTodayClick = () => {
+    const today = new Date();
+    const formattedDate = format(today, 'MM/dd/yyyy');
     onDateSelect(formattedDate);
     onOpenChange(false);
   };
@@ -37,6 +45,12 @@ export const CalendarDialog = ({ open, onOpenChange, onDateSelect }: CalendarDia
             max={new Date().toISOString().split('T')[0]}
             autoFocus
           />
+          <Button 
+            onClick={handleTodayClick}
+            className="retro-button w-full"
+          >
+            Go to Today
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
