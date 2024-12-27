@@ -71,7 +71,7 @@ export const Journal = () => {
       />
       
       <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
-        <div className="terminal-window h-full">
+        <div className="terminal-window left-panel h-full">
           <JournalInput
             title={newSectionTitle}
             content={newContent}
@@ -94,7 +94,7 @@ export const Journal = () => {
           />
         </div>
 
-        <div className="terminal-window h-full flex flex-col">
+        <div className="terminal-window right-panel h-full flex flex-col">
           {!showAnalysis ? (
             <>
               <EntryList 
