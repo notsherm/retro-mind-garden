@@ -79,12 +79,12 @@ export const Journal = () => {
       return;
     }
 
-    const currentDate = new Date().toISOString().split('T')[0];
+    // Use selectedDate instead of current date to ensure entries are saved on the correct date
     const newSection = {
       title: newSectionTitle,
       content: newContent,
       timestamp: Date.now(),
-      date: currentDate,
+      date: selectedDate,
       user_id: user.id
     };
 
