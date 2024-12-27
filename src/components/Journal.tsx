@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { EntryList } from './EntryList';
 import { JournalInput } from './JournalInput';
