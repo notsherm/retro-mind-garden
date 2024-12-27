@@ -154,11 +154,11 @@
   }
 
   [data-blur-mode="enabled"] .journal-entry {
-    @apply blur-sm hover:blur-none focus-within:blur-none transition-all duration-200;
+    @apply blur-sm transition-all duration-200;
   }
 
-  [data-blur-mode="enabled"] .journal-entry:hover,
-  [data-blur-mode="enabled"] .journal-entry:focus-within {
+  [data-blur-mode="enabled"] .journal-entry:active,
+  [data-blur-mode="enabled"] .journal-entry:focus {
     @apply blur-none;
   }
 
