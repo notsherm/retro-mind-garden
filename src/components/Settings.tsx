@@ -99,35 +99,35 @@ export const Settings = () => {
           
           <div className="space-y-6 text-terminal-green">
             <section className="space-y-2">
-              <h3 className="font-semibold">Journal Entries</h3>
+              <h3 className="text-terminal-gray font-bold uppercase text-sm tracking-wider border-b border-terminal-gray/30 pb-1">Journal Entries</h3>
               <p>• Create new entries by typing in the left panel</p>
               <p>• Entries are automatically saved as you type</p>
               <p>• View and edit past entries from the right panel</p>
             </section>
 
             <section className="space-y-2">
-              <h3 className="font-semibold">Navigation</h3>
+              <h3 className="text-terminal-gray font-bold uppercase text-sm tracking-wider border-b border-terminal-gray/30 pb-1">Navigation</h3>
               <p>• Use the calendar icon to view entries from different dates</p>
               <p>• Search through your entries using the search icon</p>
               <p>• New entries are always added to today's date</p>
             </section>
 
             <section className="space-y-2">
-              <h3 className="font-semibold">AI Analysis</h3>
+              <h3 className="text-terminal-gray font-bold uppercase text-sm tracking-wider border-b border-terminal-gray/30 pb-1">AI Analysis</h3>
               <p>• Get AI-powered insights about your journal entries</p>
               <p>• Analysis results are saved for each date</p>
               <p>• View analysis by clicking the "Analyze" button</p>
             </section>
 
             <section className="space-y-2">
-              <h3 className="font-semibold">Theme Customization</h3>
+              <h3 className="text-terminal-gray font-bold uppercase text-sm tracking-wider border-b border-terminal-gray/30 pb-1">Theme Customization</h3>
               <p>• Choose from multiple retro-themed styles</p>
               <p>• Themes can be changed at any time from settings</p>
               <p>• Your theme preference is saved automatically</p>
             </section>
 
             <section className="space-y-2">
-              <h3 className="font-semibold">Tips</h3>
+              <h3 className="text-terminal-gray font-bold uppercase text-sm tracking-wider border-b border-terminal-gray/30 pb-1">Tips</h3>
               <p>• Your entries are private and secure</p>
               <p>• Use the search function to find specific content</p>
               <p>• The app works best when used daily</p>
