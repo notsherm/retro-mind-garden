@@ -83,12 +83,14 @@ export const Settings = () => {
             </div>
 
             <div className="space-y-4 border-t border-terminal-green pt-4">
-              <h3 className="text-terminal-green font-semibold">Privacy Mode</h3>
-              <Switch
-                checked={blurMode}
-                onCheckedChange={handleBlurModeChange}
-                className="bg-gray-400/50 data-[state=checked]:bg-white border-2 border-white"
-              />
+              <div className="flex items-center justify-between">
+                <h3 className="text-terminal-green font-semibold">Privacy Mode</h3>
+                <Switch
+                  checked={blurMode}
+                  onCheckedChange={handleBlurModeChange}
+                  className="bg-gray-600 data-[state=checked]:bg-white border-2 border-gray-400 data-[state=checked]:border-white h-6 w-11"
+                />
+              </div>
             </div>
 
             <div className="pt-4 border-t border-terminal-green space-y-4">
