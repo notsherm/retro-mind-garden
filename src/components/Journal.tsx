@@ -14,6 +14,7 @@ interface Section {
   content: string;
   timestamp: number;
   date: string;
+  user_id: string;
 }
 
 export const Journal = () => {
@@ -31,6 +32,9 @@ export const Journal = () => {
   }, [selectedDate]);
 
   const loadEntries = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('journal_entries')
       .select('*')
@@ -52,6 +56,7 @@ export const Journal = () => {
         content: entry.content,
         timestamp: entry.timestamp,
         date: entry.date,
+        user_id: entry.user_id
       })));
     }
   };
@@ -66,11 +71,22 @@ export const Journal = () => {
       return;
     }
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Authentication error",
+        description: "Please sign in to add entries",
+        duration: 2000,
+      });
+      return;
+    }
+
     const newSection = {
       title: newSectionTitle,
       content: newContent,
       timestamp: Date.now(),
       date: new Date().toISOString().split('T')[0],
+      user_id: user.id
     };
 
     const { error } = await supabase
@@ -107,17 +123,34 @@ export const Journal = () => {
     setNewContent(section.content);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editingSection) return;
 
-    const updatedSections = sections.map(section => 
-      section.id === editingSection.id 
-        ? { ...section, title: newSectionTitle, content: newContent }
-        : section
-    );
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-    setSections(updatedSections);
-    localStorage.setItem('journal-sections', JSON.stringify(updatedSections));
+    const updatedSection = {
+      ...editingSection,
+      title: newSectionTitle,
+      content: newContent,
+      user_id: user.id
+    };
+
+    const { error } = await supabase
+      .from('journal_entries')
+      .update(updatedSection)
+      .eq('id', editingSection.id);
+
+    if (error) {
+      toast({
+        title: "Error updating entry",
+        description: error.message,
+        duration: 2000,
+      });
+      return;
+    }
+
+    await loadEntries();
     setEditingSection(null);
     setNewSectionTitle("");
     setNewContent("");
