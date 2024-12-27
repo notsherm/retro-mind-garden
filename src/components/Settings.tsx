@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings as SettingsIcon, LogOut } from 'lucide-react';
+import { Settings as SettingsIcon, LogOut, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -22,6 +22,7 @@ const themes: { id: Theme; name: string }[] = [
 export const Settings = () => {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isHelpOpen, setIsHelpOpen] = React.useState(false);
   const [currentTheme, setCurrentTheme] = React.useState<Theme>('classic-terminal');
 
   const handleSignOut = async () => {
@@ -69,7 +70,15 @@ export const Settings = () => {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-terminal-green">
+            <div className="pt-4 border-t border-terminal-green space-y-4">
+              <Button
+                onClick={() => setIsHelpOpen(true)}
+                className="retro-button w-full flex items-center justify-center gap-2"
+              >
+                <HelpCircle className="h-4 w-4" />
+                Help & Features
+              </Button>
+              
               <Button
                 onClick={handleSignOut}
                 className="retro-button w-full flex items-center justify-center gap-2"
@@ -78,6 +87,51 @@ export const Settings = () => {
                 Sign Out
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isHelpOpen} onOpenChange={setIsHelpOpen}>
+        <DialogContent className="terminal-window max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-terminal-green text-xl font-bold mb-4">Help & Features</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 text-terminal-green">
+            <section className="space-y-2">
+              <h3 className="font-semibold">Journal Entries</h3>
+              <p>• Create new entries by typing in the left panel</p>
+              <p>• Entries are automatically saved as you type</p>
+              <p>• View and edit past entries from the right panel</p>
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-semibold">Navigation</h3>
+              <p>• Use the calendar icon to view entries from different dates</p>
+              <p>• Search through your entries using the search icon</p>
+              <p>• New entries are always added to today's date</p>
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-semibold">AI Analysis</h3>
+              <p>• Get AI-powered insights about your journal entries</p>
+              <p>• Analysis results are saved for each date</p>
+              <p>• View analysis by clicking the "Analyze" button</p>
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-semibold">Theme Customization</h3>
+              <p>• Choose from multiple retro-themed styles</p>
+              <p>• Themes can be changed at any time from settings</p>
+              <p>• Your theme preference is saved automatically</p>
+            </section>
+
+            <section className="space-y-2">
+              <h3 className="font-semibold">Tips</h3>
+              <p>• Your entries are private and secure</p>
+              <p>• Use the search function to find specific content</p>
+              <p>• The app works best when used daily</p>
+            </section>
           </div>
         </DialogContent>
       </Dialog>
