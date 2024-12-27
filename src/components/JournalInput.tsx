@@ -41,7 +41,7 @@ export const JournalInput = ({
         placeholder="Write your thoughts..."
         value={content}
         onChange={onContentChange}
-        className="retro-input min-h-[300px] resize-none"
+        className="retro-input min-h-[500px] resize-none"
       />
 
       {isViewingPastDate && !selectedEntryId && (

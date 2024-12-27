@@ -48,7 +48,7 @@ export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }:
         {filteredEntries.map((entry) => (
           <div 
             key={entry.id} 
-            className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors"
+            className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors bg-terminal-black/50"
             onClick={() => onEntryClick(entry)}
           >
             <h3 className="text-lg font-bold mb-2">{entry.title}</h3>
