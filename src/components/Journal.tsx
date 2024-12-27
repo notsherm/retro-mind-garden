@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
 interface Section {
   id: string;
@@ -10,9 +13,10 @@ interface Section {
 
 export const Journal = () => {
   const [sections, setSections] = useState<Section[]>([]);
-  const [currentSection, setCurrentSection] = useState<Section | null>(null);
   const [newSectionTitle, setNewSectionTitle] = useState("");
+  const [newContent, setNewContent] = useState("");
   const [analysis, setAnalysis] = useState("");
+  const [showAnalysis, setShowAnalysis] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -22,113 +26,133 @@ export const Journal = () => {
     }
   }, []);
 
-  const createNewSection = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && newSectionTitle.trim()) {
-      const newSection = {
-        id: Date.now().toString(),
-        title: newSectionTitle,
-        content: "",
-        timestamp: Date.now(),
-      };
-      setSections([...sections, newSection]);
-      setCurrentSection(newSection);
-      setNewSectionTitle("");
-      localStorage.setItem('journal-sections', JSON.stringify([...sections, newSection]));
+  const addNewSection = () => {
+    if (!newSectionTitle.trim() || !newContent.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please provide both a title and content for your entry",
+        duration: 2000,
+      });
+      return;
     }
-  };
 
-  const updateSection = (content: string) => {
-    if (!currentSection) return;
+    const newSection = {
+      id: Date.now().toString(),
+      title: newSectionTitle,
+      content: newContent,
+      timestamp: Date.now(),
+    };
 
-    const updatedSection = { ...currentSection, content };
-    const updatedSections = sections.map(s => 
-      s.id === currentSection.id ? updatedSection : s
-    );
-
-    setCurrentSection(updatedSection);
+    const updatedSections = [...sections, newSection];
     setSections(updatedSections);
     localStorage.setItem('journal-sections', JSON.stringify(updatedSections));
+    
+    // Reset inputs
+    setNewSectionTitle("");
+    setNewContent("");
 
-    // Auto-save notification
     toast({
-      title: "Auto-saved",
+      title: "Entry added",
       description: "Your journal entry has been saved",
       duration: 2000,
     });
+  };
 
+  const analyzeEntries = () => {
+    setShowAnalysis(true);
     // Mock AI analysis (replace with actual AI integration)
-    setTimeout(() => {
-      setAnalysis("Based on your entry, it seems you're feeling reflective today. Your writing shows a pattern of introspective thinking...");
-    }, 1000);
+    setAnalysis("Based on your entries, it seems you're feeling reflective today. Your writing shows a pattern of introspective thinking...");
+    
+    toast({
+      title: "Analysis complete",
+      description: "AI has analyzed your entries",
+      duration: 2000,
+    });
   };
 
   return (
     <div className="min-h-screen p-4 bg-terminal-black">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left Column - Journal Entry */}
-          <div className="terminal-window">
-            <div className="mb-4">
-              <input
-                type="text"
-                placeholder="New section (Enter to add)"
-                value={newSectionTitle}
-                onChange={(e) => setNewSectionTitle(e.target.value)}
-                onKeyDown={createNewSection}
-                className="retro-input"
-              />
-            </div>
-            
-            <div className="mb-4">
-              <select
-                className="retro-input"
-                onChange={(e) => {
-                  const section = sections.find(s => s.id === e.target.value);
-                  setCurrentSection(section || null);
-                }}
-                value={currentSection?.id || ""}
-              >
-                <option value="">Select a section...</option>
-                {sections.map(section => (
-                  <option key={section.id} value={section.id}>
-                    {section.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <textarea
-              className="retro-input min-h-[400px] resize-none"
-              placeholder="Start writing your thoughts..."
-              value={currentSection?.content || ""}
-              onChange={(e) => updateSection(e.target.value)}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Left Column - Input Area */}
+        <div className="terminal-window">
+          <div className="space-y-4">
+            <Input
+              type="text"
+              placeholder="New section title..."
+              value={newSectionTitle}
+              onChange={(e) => setNewSectionTitle(e.target.value)}
+              className="retro-input"
             />
-          </div>
+            
+            <Textarea
+              placeholder="Write your thoughts..."
+              value={newContent}
+              onChange={(e) => setNewContent(e.target.value)}
+              className="retro-input min-h-[300px] resize-none"
+            />
 
-          {/* Right Column - AI Analysis */}
-          <div className="terminal-window">
-            <h2 className="text-xl font-bold mb-4">AI Analysis</h2>
-            <div className="animate-typing overflow-hidden whitespace-pre-wrap border-r-2 border-terminal-green">
-              {analysis || "Waiting for your entry..."}
+            <Button
+              onClick={addNewSection}
+              className="retro-button w-full"
+            >
+              Add Entry
+            </Button>
+          </div>
+        </div>
+
+        {/* Right Column - Entries Display & Analysis */}
+        <div className="terminal-window">
+          {!showAnalysis ? (
+            <div className="space-y-6">
+              {sections.map((section) => (
+                <div key={section.id} className="border border-terminal-green p-4 rounded-lg">
+                  <h3 className="text-lg font-bold mb-2">{section.title}</h3>
+                  <p className="whitespace-pre-wrap text-terminal-gray">{section.content}</p>
+                  <div className="text-xs text-terminal-gray mt-2">
+                    {new Date(section.timestamp).toLocaleString()}
+                  </div>
+                </div>
+              ))}
+              
+              {sections.length > 0 && (
+                <Button
+                  onClick={analyzeEntries}
+                  className="retro-button w-full"
+                >
+                  Analyze Entries
+                </Button>
+              )}
             </div>
-          </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="animate-typing overflow-hidden whitespace-pre-wrap border-r-2 border-terminal-green">
+                {analysis}
+              </div>
+              <Button
+                onClick={() => setShowAnalysis(false)}
+                className="retro-button w-full"
+              >
+                Back to Entries
+              </Button>
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* Save Button */}
-        <div className="fixed bottom-4 right-4">
-          <button
-            className="retro-button"
-            onClick={() => {
-              toast({
-                title: "Saved",
-                description: "Your journal is backed up and secure",
-                duration: 2000,
-              });
-            }}
-          >
-            Save
-          </button>
-        </div>
+      {/* Auto-save indicator */}
+      <div className="fixed bottom-4 right-4">
+        <Button
+          className="retro-button"
+          onClick={() => {
+            toast({
+              title: "Saved",
+              description: "Your journal is backed up and secure",
+              duration: 2000,
+            });
+          }}
+        >
+          Save
+        </Button>
       </div>
     </div>
   );
