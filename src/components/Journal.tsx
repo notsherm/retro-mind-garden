@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { EntryList } from './EntryList';
-import { SearchPanel } from './SearchPanel';
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut } from 'lucide-react';
+import { EntryList } from './EntryList';
+import { JournalInput } from './JournalInput';
+import { HamburgerMenu } from './HamburgerMenu';
+import { Button } from "@/components/ui/button";
 
 interface Section {
   id: string;
@@ -170,63 +168,59 @@ export const Journal = () => {
 
   const navigateDate = (direction: 'prev' | 'next') => {
     const currentDate = new Date(selectedDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
     const newDate = new Date(currentDate);
     
     if (direction === 'prev') {
       newDate.setDate(currentDate.getDate() - 1);
-    } else {
+      setSelectedDate(newDate.toISOString().split('T')[0]);
+    } else if (direction === 'next' && currentDate < today) {
       newDate.setDate(currentDate.getDate() + 1);
+      setSelectedDate(newDate.toISOString().split('T')[0]);
     }
-    
-    setSelectedDate(newDate.toISOString().split('T')[0]);
+  };
+
+  const isCurrentDate = () => {
+    const today = new Date().toISOString().split('T')[0];
+    return selectedDate === today;
   };
 
   return (
     <div className="min-h-screen h-screen p-4 bg-terminal-black relative">
-      <Button
-        onClick={handleSignOut}
-        className="retro-button absolute top-4 left-4 z-50"
-      >
-        <LogOut className="mr-2 h-4 w-4" />
-        Sign Out
-      </Button>
-
-      <SearchPanel sections={sections} onDateSelect={setSelectedDate} />
+      <HamburgerMenu
+        onSignOut={handleSignOut}
+        onSearch={() => setShowSearch(true)}
+        onCalendar={() => {
+          const date = prompt('Enter date (YYYY-MM-DD)');
+          if (date) setSelectedDate(date);
+        }}
+      />
       
       <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
-        {/* Left Column - Input Area */}
+        {/* Left Column - Input Area or Historical Entry */}
         <div className="terminal-window h-full">
-          <div className="space-y-4">
-            <Input
-              type="text"
-              placeholder="New section title..."
-              value={newSectionTitle}
-              onChange={(e) => setNewSectionTitle(e.target.value)}
-              className="retro-input"
+          {isCurrentDate() ? (
+            <JournalInput
+              title={newSectionTitle}
+              content={newContent}
+              onTitleChange={(e) => setNewSectionTitle(e.target.value)}
+              onContentChange={(e) => setNewContent(e.target.value)}
+              onSave={editingSection ? saveEdit : addNewSection}
+              isEditing={!!editingSection}
+              onCancelEdit={cancelEdit}
             />
-            
-            <Textarea
-              placeholder="Write your thoughts..."
-              value={newContent}
-              onChange={(e) => setNewContent(e.target.value)}
-              className="retro-input min-h-[calc(100vh-300px)] resize-none"
-            />
-
-            {editingSection ? (
-              <div className="flex gap-2">
-                <Button onClick={saveEdit} className="retro-button flex-1">
-                  Save Changes
-                </Button>
-                <Button onClick={cancelEdit} className="retro-button flex-1">
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <Button onClick={addNewSection} className="retro-button w-full">
-                Add Entry
-              </Button>
-            )}
-          </div>
+          ) : (
+            <div className="space-y-4">
+              {sections.map((section) => (
+                <div key={section.id} className="border border-terminal-green p-4 rounded-lg">
+                  <h3 className="text-lg font-bold mb-2">{section.title}</h3>
+                  <p className="whitespace-pre-wrap text-terminal-gray">{section.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right Column - Entries Display & Analysis */}
@@ -240,7 +234,7 @@ export const Journal = () => {
                 onEntryClick={startEditing}
               />
               
-              {sections.length > 0 && (
+              {sections.length > 0 && isCurrentDate() && (
                 <Button
                   onClick={() => {
                     setShowAnalysis(true);
