@@ -18,6 +18,7 @@ export const Journal = () => {
     setShowAnalysis,
     isAnalyzing,
     selectedDate,
+    setSelectedDate,
     addNewSection,
     updateEntry,
     analyzeEntries,
@@ -33,10 +34,7 @@ export const Journal = () => {
       <HamburgerMenu
         onSignOut={handleSignOut}
         onSearch={() => {}}
-        onCalendar={() => {
-          const date = prompt('Enter date (YYYY-MM-DD)');
-          if (date) setSelectedDate(date);
-        }}
+        onCalendar={(date) => setSelectedDate(date)}
       />
       
       <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
