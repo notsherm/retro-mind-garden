@@ -129,9 +129,36 @@ export const useEntries = (
     });
   };
 
+  const deleteEntry = async (entryId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('journal_entries')
+      .delete()
+      .eq('id', entryId);
+
+    if (error) {
+      toast({
+        title: "Error deleting entry",
+        description: error.message,
+        duration: 2000,
+      });
+      return;
+    }
+
+    await loadEntries();
+    toast({
+      title: "Entry deleted",
+      description: "Your entry has been removed",
+      duration: 2000,
+    });
+  };
+
   return {
     loadEntries,
     addNewSection,
-    updateEntry
+    updateEntry,
+    deleteEntry
   };
 };

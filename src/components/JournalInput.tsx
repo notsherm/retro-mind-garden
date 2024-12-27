@@ -6,17 +6,21 @@ import { Textarea } from "@/components/ui/textarea";
 interface JournalInputProps {
   title: string;
   content: string;
+  selectedEntryId?: string;
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onSave: () => void;
+  onDelete?: () => void;
 }
 
 export const JournalInput = ({
   title,
   content,
+  selectedEntryId,
   onTitleChange,
   onContentChange,
-  onSave
+  onSave,
+  onDelete
 }: JournalInputProps) => {
   return (
     <div className="space-y-4">
@@ -36,8 +40,18 @@ export const JournalInput = ({
       />
 
       <Button onClick={onSave} className="retro-button w-full">
-        Add Entry
+        {selectedEntryId ? 'Update Entry' : 'Add Entry'}
       </Button>
+
+      {selectedEntryId && (
+        <Button 
+          onClick={onDelete} 
+          variant="destructive" 
+          className="retro-button w-full"
+        >
+          Delete Entry
+        </Button>
+      )}
     </div>
   );
 };

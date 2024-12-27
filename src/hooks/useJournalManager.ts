@@ -35,7 +35,7 @@ export const useJournalManager = () => {
     setSelectedDate
   };
 
-  const { loadEntries, addNewSection, updateEntry } = useEntries(state, actions);
+  const { loadEntries, addNewSection, updateEntry, deleteEntry } = useEntries(state, actions);
   const { analyzeEntries } = useAnalysis(state, actions);
 
   useEffect(() => {
@@ -72,6 +72,7 @@ export const useJournalManager = () => {
     setSelectedDate,
     addNewSection,
     updateEntry,
+    deleteEntry,
     analyzeEntries,
     navigateDate
   };

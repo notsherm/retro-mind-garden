@@ -24,6 +24,7 @@ export const Journal = () => {
     setSelectedDate,
     addNewSection,
     updateEntry,
+    deleteEntry,
     analyzeEntries,
     navigateDate
   } = useJournalManager();
@@ -31,6 +32,7 @@ export const Journal = () => {
   const { toast } = useToast();
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedEntryId, setSelectedEntryId] = useState<string | undefined>();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -58,6 +60,15 @@ export const Journal = () => {
         description: "Try different search terms",
         duration: 2000,
       });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (selectedEntryId) {
+      await deleteEntry(selectedEntryId);
+      setSelectedEntryId(undefined);
+      setNewSectionTitle('');
+      setNewContent('');
     }
   };
 
@@ -106,9 +117,21 @@ export const Journal = () => {
           <JournalInput
             title={newSectionTitle}
             content={newContent}
+            selectedEntryId={selectedEntryId}
             onTitleChange={(e) => setNewSectionTitle(e.target.value)}
             onContentChange={(e) => setNewContent(e.target.value)}
-            onSave={addNewSection}
+            onSave={() => {
+              if (selectedEntryId) {
+                const entry = sections.find(s => s.id === selectedEntryId);
+                if (entry) {
+                  updateEntry(entry);
+                  setSelectedEntryId(undefined);
+                }
+              } else {
+                addNewSection();
+              }
+            }}
+            onDelete={handleDelete}
           />
         </div>
 
@@ -122,6 +145,7 @@ export const Journal = () => {
                 onEntryClick={(entry) => {
                   setNewSectionTitle(entry.title);
                   setNewContent(entry.content);
+                  setSelectedEntryId(entry.id);
                 }}
               />
               
