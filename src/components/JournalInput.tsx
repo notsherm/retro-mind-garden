@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Plus } from "lucide-react";
 
 interface JournalInputProps {
   title: string;
@@ -12,6 +13,8 @@ interface JournalInputProps {
   onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onSave: () => void;
   onDelete?: () => void;
+  isCreating: boolean;
+  onStartCreating: () => void;
 }
 
 export const JournalInput = ({
@@ -22,10 +25,24 @@ export const JournalInput = ({
   onTitleChange,
   onContentChange,
   onSave,
-  onDelete
+  onDelete,
+  isCreating,
+  onStartCreating
 }: JournalInputProps) => {
   const today = new Date().toISOString().split('T')[0];
   const isViewingPastDate = selectedDate !== today;
+
+  if (!isCreating) {
+    return (
+      <Button 
+        onClick={onStartCreating}
+        className="w-full bg-transparent border border-terminal-green text-terminal-green hover:bg-terminal-green/10 transition-colors flex items-center gap-2"
+      >
+        <Plus className="h-4 w-4" />
+        New Entry
+      </Button>
+    );
+  }
 
   return (
     <div className="w-[600px] space-y-4">

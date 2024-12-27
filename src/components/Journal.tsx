@@ -28,6 +28,7 @@ export const Journal = () => {
 
   const { toast } = useToast();
   const [selectedEntryId, setSelectedEntryId] = useState<string | undefined>();
+  const [isCreatingEntry, setIsCreatingEntry] = useState(false);
 
   const handleSearch = (query: string) => {
     const results = sections.filter(section => 
@@ -60,7 +61,23 @@ export const Journal = () => {
       setSelectedEntryId(undefined);
       setNewSectionTitle('');
       setNewContent('');
+      setIsCreatingEntry(false);
     }
+  };
+
+  const handleSave = () => {
+    if (selectedEntryId) {
+      const entry = sections.find(s => s.id === selectedEntryId);
+      if (entry) {
+        updateEntry(entry);
+        setSelectedEntryId(undefined);
+      }
+    } else {
+      addNewSection();
+    }
+    setIsCreatingEntry(false);
+    setNewSectionTitle('');
+    setNewContent('');
   };
 
   if (!sections) {
@@ -80,7 +97,7 @@ export const Journal = () => {
       
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16 px-4 pb-4">
         <div className="relative">
-          <div className="terminal-window left-panel sticky top-20 h-[calc(100vh-6rem)] z-[2] bg-terminal-black">
+          <div className="terminal-window left-panel sticky top-20 z-[2] bg-terminal-black">
             <JournalInput
               title={newSectionTitle}
               content={newContent}
@@ -88,18 +105,10 @@ export const Journal = () => {
               selectedEntryId={selectedEntryId}
               onTitleChange={(e) => setNewSectionTitle(e.target.value)}
               onContentChange={(e) => setNewContent(e.target.value)}
-              onSave={() => {
-                if (selectedEntryId) {
-                  const entry = sections.find(s => s.id === selectedEntryId);
-                  if (entry) {
-                    updateEntry(entry);
-                    setSelectedEntryId(undefined);
-                  }
-                } else {
-                  addNewSection();
-                }
-              }}
+              onSave={handleSave}
               onDelete={handleDelete}
+              isCreating={isCreatingEntry}
+              onStartCreating={() => setIsCreatingEntry(true)}
             />
           </div>
         </div>
@@ -115,6 +124,7 @@ export const Journal = () => {
                   setNewSectionTitle(entry.title);
                   setNewContent(entry.content);
                   setSelectedEntryId(entry.id);
+                  setIsCreatingEntry(true);
                 }}
               />
               
