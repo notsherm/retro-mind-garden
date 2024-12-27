@@ -125,6 +125,7 @@
   .retro-input {
     @apply bg-transparent text-terminal-green p-2 w-full focus:outline-none transition-all duration-200;
     box-shadow: 0 0 10px rgba(155, 135, 245, 0.2);
+    border: none;
   }
 
   .retro-input:focus {
