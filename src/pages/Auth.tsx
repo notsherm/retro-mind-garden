@@ -105,7 +105,7 @@ const Auth = () => {
           }}
           className="w-full text-center text-terminal-gray text-sm hover:text-terminal-green transition-colors duration-200 mt-4"
         >
-          {showSignUp ? {'>'} Return to login' : {'>'} Request system access'}
+          {showSignUp ? '> Return to login' : '> Request system access'}
         </button>
       </div>
     </div>
