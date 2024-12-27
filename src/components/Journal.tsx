@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { EntryList } from './EntryList';
 import { JournalInput } from './JournalInput';
 import { HamburgerMenu } from './HamburgerMenu';
-import { EditHistory } from './EditHistory';
 
 interface Section {
   id: string;
@@ -169,11 +168,6 @@ export const Journal = () => {
     }
   };
 
-  const isCurrentDate = () => {
-    const today = new Date().toISOString().split('T')[0];
-    return selectedDate === today;
-  };
-
   return (
     <div className="min-h-screen h-screen p-4 bg-terminal-black relative">
       <HamburgerMenu
@@ -198,7 +192,7 @@ export const Journal = () => {
         </div>
 
         {/* Right Column - Historical entries & Analysis */}
-        <div className="terminal-window h-full">
+        <div className="terminal-window h-full flex flex-col">
           {!showAnalysis ? (
             <>
               <EntryList 
@@ -227,7 +221,7 @@ export const Journal = () => {
                       duration: 2000,
                     });
                   }}
-                  className="retro-button w-full mt-4"
+                  className="retro-button mt-4"
                 >
                   Analyze Entries
                 </button>
