@@ -5,6 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { EntryList } from './EntryList';
 import { SearchPanel } from './SearchPanel';
+import { supabase } from "@/integrations/supabase/client";
+import { LogOut } from 'lucide-react';
 
 interface Section {
   id: string;
@@ -25,13 +27,36 @@ export const Journal = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const savedSections = localStorage.getItem('journal-sections');
-    if (savedSections) {
-      setSections(JSON.parse(savedSections));
-    }
-  }, []);
+    loadEntries();
+  }, [selectedDate]);
 
-  const addNewSection = () => {
+  const loadEntries = async () => {
+    const { data, error } = await supabase
+      .from('journal_entries')
+      .select('*')
+      .eq('date', selectedDate);
+
+    if (error) {
+      toast({
+        title: "Error loading entries",
+        description: error.message,
+        duration: 2000,
+      });
+      return;
+    }
+
+    if (data) {
+      setSections(data.map(entry => ({
+        id: entry.id,
+        title: entry.title,
+        content: entry.content,
+        timestamp: entry.timestamp,
+        date: entry.date,
+      })));
+    }
+  };
+
+  const addNewSection = async () => {
     if (!newSectionTitle.trim() || !newContent.trim()) {
       toast({
         title: "Missing information",
@@ -42,17 +67,26 @@ export const Journal = () => {
     }
 
     const newSection = {
-      id: Date.now().toString(),
       title: newSectionTitle,
       content: newContent,
       timestamp: Date.now(),
       date: new Date().toISOString().split('T')[0],
     };
 
-    const updatedSections = [...sections, newSection];
-    setSections(updatedSections);
-    localStorage.setItem('journal-sections', JSON.stringify(updatedSections));
-    
+    const { error } = await supabase
+      .from('journal_entries')
+      .insert([newSection]);
+
+    if (error) {
+      toast({
+        title: "Error saving entry",
+        description: error.message,
+        duration: 2000,
+      });
+      return;
+    }
+
+    await loadEntries();
     setNewSectionTitle("");
     setNewContent("");
 
@@ -61,6 +95,10 @@ export const Journal = () => {
       description: "Your journal entry has been saved",
       duration: 2000,
     });
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
   };
 
   const startEditing = (section: Section) => {
@@ -110,15 +148,19 @@ export const Journal = () => {
     setSelectedDate(newDate.toISOString().split('T')[0]);
   };
 
-  const filteredSections = sections.filter(
-    section => section.date === selectedDate
-  );
-
   return (
-    <div className="min-h-screen h-screen p-4 bg-terminal-black">
+    <div className="min-h-screen h-screen p-4 bg-terminal-black relative">
+      <Button
+        onClick={handleSignOut}
+        className="retro-button absolute top-4 left-4 z-50"
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        Sign Out
+      </Button>
+
       <SearchPanel sections={sections} onDateSelect={setSelectedDate} />
       
-      <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
         {/* Left Column - Input Area */}
         <div className="terminal-window h-full">
           <div className="space-y-4">
@@ -159,13 +201,13 @@ export const Journal = () => {
           {!showAnalysis ? (
             <>
               <EntryList 
-                entries={filteredSections}
+                entries={sections}
                 selectedDate={selectedDate}
                 onDateChange={navigateDate}
                 onEntryClick={startEditing}
               />
               
-              {filteredSections.length > 0 && (
+              {sections.length > 0 && (
                 <Button
                   onClick={() => {
                     setShowAnalysis(true);
