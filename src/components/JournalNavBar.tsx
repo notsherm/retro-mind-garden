@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Calendar, Search, LogOut } from 'lucide-react';
+import { Calendar, Search } from 'lucide-react';
 import { Input } from './ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from "@/integrations/supabase/client";
 import { SearchDialog } from './dialogs/SearchDialog';
 import { CalendarDialog } from './dialogs/CalendarDialog';
 import { parse, format } from 'date-fns';
+import { Settings } from './Settings';
 
 interface JournalNavBarProps {
   onDateChange: (date: string) => void;
@@ -20,10 +20,6 @@ export const JournalNavBar = ({ onDateChange, onSearch }: JournalNavBarProps) =>
   const [calendarDialogOpen, setCalendarDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
-
   const handleSearch = () => {
     onSearch(searchQuery);
     setShowSearch(false);
@@ -31,7 +27,6 @@ export const JournalNavBar = ({ onDateChange, onSearch }: JournalNavBarProps) =>
   };
 
   const handleDateSelect = (dateStr: string) => {
-    // Convert from MM/DD/YYYY to YYYY-MM-DD for internal use
     const date = parse(dateStr, 'MM/dd/yyyy', new Date());
     const formattedDate = format(date, 'yyyy-MM-dd');
     onDateChange(formattedDate);
@@ -67,9 +62,7 @@ export const JournalNavBar = ({ onDateChange, onSearch }: JournalNavBarProps) =>
           )}
         </div>
       </div>
-      <Button onClick={handleSignOut} className="retro-button">
-        <LogOut className="h-4 w-4" />
-      </Button>
+      <Settings />
 
       <SearchDialog
         open={searchDialogOpen}
