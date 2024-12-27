@@ -72,14 +72,14 @@ export const Journal = () => {
   }
 
   return (
-    <div className="min-h-screen h-screen p-4 bg-terminal-black relative">
+    <div className="min-h-screen bg-terminal-black relative">
       <JournalNavBar 
         onDateChange={setSelectedDate}
         onSearch={handleSearch}
       />
       
-      <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
-        <div className="terminal-window left-panel h-full flex items-center justify-center">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16 px-4 pb-4">
+        <div className="terminal-window left-panel sticky top-20 h-[calc(100vh-6rem)]">
           <JournalInput
             title={newSectionTitle}
             content={newContent}
@@ -102,7 +102,7 @@ export const Journal = () => {
           />
         </div>
 
-        <div className="terminal-window right-panel h-full overflow-hidden flex flex-col">
+        <div className="terminal-window right-panel">
           {!showAnalysis ? (
             <>
               <EntryList 
