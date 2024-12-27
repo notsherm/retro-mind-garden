@@ -166,4 +166,14 @@
     box-shadow: 0 0 10px rgba(74, 246, 38, 0.2);
     font-size: inherit;
   }
+
+  /* Add blur mode styles */
+  [data-blur-mode="enabled"] .journal-entry {
+    filter: blur(5px);
+    transition: filter 0.2s ease-in-out;
+  }
+
+  [data-blur-mode="enabled"] .journal-entry:hover {
+    filter: blur(0);
+  }
 }
