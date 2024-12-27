@@ -78,31 +78,33 @@ export const Journal = () => {
         onSearch={handleSearch}
       />
       
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16 px-4 pb-4 relative">
-        <div className="terminal-window left-panel sticky top-20 h-[calc(100vh-6rem)] z-[2]">
-          <JournalInput
-            title={newSectionTitle}
-            content={newContent}
-            selectedDate={selectedDate}
-            selectedEntryId={selectedEntryId}
-            onTitleChange={(e) => setNewSectionTitle(e.target.value)}
-            onContentChange={(e) => setNewContent(e.target.value)}
-            onSave={() => {
-              if (selectedEntryId) {
-                const entry = sections.find(s => s.id === selectedEntryId);
-                if (entry) {
-                  updateEntry(entry);
-                  setSelectedEntryId(undefined);
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16 px-4 pb-4">
+        <div className="relative">
+          <div className="terminal-window left-panel sticky top-20 h-[calc(100vh-6rem)] z-[2] bg-terminal-black">
+            <JournalInput
+              title={newSectionTitle}
+              content={newContent}
+              selectedDate={selectedDate}
+              selectedEntryId={selectedEntryId}
+              onTitleChange={(e) => setNewSectionTitle(e.target.value)}
+              onContentChange={(e) => setNewContent(e.target.value)}
+              onSave={() => {
+                if (selectedEntryId) {
+                  const entry = sections.find(s => s.id === selectedEntryId);
+                  if (entry) {
+                    updateEntry(entry);
+                    setSelectedEntryId(undefined);
+                  }
+                } else {
+                  addNewSection();
                 }
-              } else {
-                addNewSection();
-              }
-            }}
-            onDelete={handleDelete}
-          />
+              }}
+              onDelete={handleDelete}
+            />
+          </div>
         </div>
 
-        <div className="terminal-window right-panel z-[1]">
+        <div className="terminal-window right-panel z-[1] relative">
           {!showAnalysis ? (
             <>
               <EntryList 

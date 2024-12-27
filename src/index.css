@@ -122,6 +122,22 @@
     @apply bg-terminal-black text-terminal-green font-mono antialiased;
   }
 
+  .terminal-window {
+    @apply rounded-lg p-4;
+  }
+
+  .left-panel {
+    @apply bg-transparent isolate;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  .right-panel {
+    @apply bg-terminal-black border border-terminal-green;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
   .retro-input {
     @apply bg-transparent text-terminal-green p-2 w-full focus:outline-none transition-all duration-200;
     box-shadow: 0 0 10px rgba(155, 135, 245, 0.2);
@@ -135,18 +151,6 @@
   .retro-button {
     @apply px-4 py-2 bg-terminal-green text-terminal-black font-bold hover:bg-opacity-90 transition-all duration-200 rounded-md;
     box-shadow: 0 0 10px rgba(74, 246, 38, 0.2);
-  }
-
-  .terminal-window {
-    @apply rounded-lg p-4;
-  }
-
-  .left-panel {
-    @apply bg-transparent;
-  }
-
-  .right-panel {
-    @apply bg-terminal-black border border-terminal-green;
   }
 
   .supabase-auth-ui_ui-container form > div:first-child {
