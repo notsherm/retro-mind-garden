@@ -33,7 +33,7 @@ const Auth = () => {
         <div className="terminal-window">
           {error && (
             <div className="text-red-500 text-sm mb-4 font-mono">
-              > ERROR: {error}
+              {'>'} ERROR: {error}
             </div>
           )}
           
@@ -105,7 +105,7 @@ const Auth = () => {
           }}
           className="w-full text-center text-terminal-gray text-sm hover:text-terminal-green transition-colors duration-200 mt-4"
         >
-          {showSignUp ? '> Return to login' : '> Request system access'}
+          {showSignUp ? {'>'} Return to login' : {'>'} Request system access'}
         </button>
       </div>
     </div>
