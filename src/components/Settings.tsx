@@ -88,7 +88,7 @@ export const Settings = () => {
                 <Switch
                   checked={blurMode}
                   onCheckedChange={handleBlurModeChange}
-                  className="bg-gray-600 data-[state=checked]:bg-white border-2 border-gray-400 data-[state=checked]:border-white h-6 w-11"
+                  className="bg-white h-6 w-11 rounded-full"
                 />
               </div>
             </div>
