@@ -78,8 +78,8 @@ export const Journal = () => {
         onSearch={handleSearch}
       />
       
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16 px-4 pb-4">
-        <div className="terminal-window left-panel sticky top-20 h-[calc(100vh-6rem)]">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16 px-4 pb-4 relative">
+        <div className="terminal-window left-panel sticky top-20 h-[calc(100vh-6rem)] z-10">
           <JournalInput
             title={newSectionTitle}
             content={newContent}
@@ -102,7 +102,7 @@ export const Journal = () => {
           />
         </div>
 
-        <div className="terminal-window right-panel">
+        <div className="terminal-window right-panel z-0">
           {!showAnalysis ? (
             <>
               <EntryList 
