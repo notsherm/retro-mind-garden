@@ -52,7 +52,6 @@ export const EntryList = ({
     return selectedDate === today;
   };
 
-  // Filter entries to only show entries from the selected date
   const filteredEntries = entries.filter(entry => entry.date === selectedDate);
 
   return (
@@ -80,7 +79,7 @@ export const EntryList = ({
           New Entry
         </Button>
       ) : (
-        <div className="mb-6">
+        <div className="mb-6 new-entry-form">
           <JournalInput
             title={title}
             content={content}
@@ -101,7 +100,7 @@ export const EntryList = ({
         {filteredEntries.map((entry) => (
           <div 
             key={entry.id} 
-            className="border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors bg-card"
+            className="journal-entry border border-terminal-green p-4 rounded-lg cursor-pointer hover:bg-terminal-green/5 transition-colors bg-card"
             onClick={() => onEntryClick(entry)}
           >
             <h3 className="text-lg font-bold mb-2 text-terminal-green">{entry.title}</h3>

@@ -39,7 +39,7 @@
     
     --background: 0 0% 98%;
     --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 96%;  /* Slightly darker than background for better contrast */
+    --card: 0 0% 96%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 98%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -105,8 +105,8 @@
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: transparent;  /* Removed unintended borders */
-    --input: transparent;   /* Removed unintended borders */
+    --border: transparent;
+    --input: transparent;
     --ring: 199 89% 48%;
   }
 
@@ -151,6 +151,19 @@
   .retro-button {
     @apply px-4 py-2 bg-terminal-green text-terminal-black font-bold hover:bg-opacity-90 transition-all duration-200 rounded-md;
     box-shadow: 0 0 10px rgba(74, 246, 38, 0.2);
+  }
+
+  [data-blur-mode="enabled"] .journal-entry {
+    @apply blur-sm hover:blur-none focus-within:blur-none transition-all duration-200;
+  }
+
+  [data-blur-mode="enabled"] .journal-entry:hover,
+  [data-blur-mode="enabled"] .journal-entry:focus-within {
+    @apply blur-none;
+  }
+
+  [data-blur-mode="enabled"] .new-entry-form {
+    @apply blur-none;
   }
 
   .supabase-auth-ui_ui-container form > div:first-child {

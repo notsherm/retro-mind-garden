@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings as SettingsIcon, LogOut, HelpCircle } from 'lucide-react';
+import { Settings as SettingsIcon, LogOut, HelpCircle, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from "@/components/ui/switch";
 
 type Theme = 'classic-terminal' | 'light-terminal' | 'purple-dream' | 'ocean-breeze';
 
@@ -24,6 +25,7 @@ export const Settings = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isHelpOpen, setIsHelpOpen] = React.useState(false);
   const [currentTheme, setCurrentTheme] = React.useState<Theme>('classic-terminal');
+  const [blurMode, setBlurMode] = React.useState(false);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -36,6 +38,16 @@ export const Settings = () => {
     toast({
       title: "Theme Updated",
       description: `Switched to ${newTheme.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`,
+      duration: 2000,
+    });
+  };
+
+  const handleBlurModeChange = (checked: boolean) => {
+    setBlurMode(checked);
+    document.documentElement.setAttribute('data-blur-mode', checked ? 'enabled' : 'disabled');
+    toast({
+      title: checked ? "Privacy Mode Enabled" : "Privacy Mode Disabled",
+      description: checked ? "Your entries are now blurred" : "Your entries are now visible",
       duration: 2000,
     });
   };
@@ -67,6 +79,21 @@ export const Settings = () => {
                     <span className="text-sm">{theme.name}</span>
                   </Button>
                 ))}
+              </div>
+            </div>
+
+            <div className="space-y-4 border-t border-terminal-green pt-4">
+              <h3 className="text-terminal-green font-semibold">Privacy</h3>
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="text-sm text-terminal-green">Privacy Mode</div>
+                  <div className="text-xs text-terminal-gray">Blur journal entries in public</div>
+                </div>
+                <Switch
+                  checked={blurMode}
+                  onCheckedChange={handleBlurModeChange}
+                  className="data-[state=checked]:bg-terminal-green"
+                />
               </div>
             </div>
 
