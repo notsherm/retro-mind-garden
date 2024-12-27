@@ -25,9 +25,9 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         terminal: {
-          green: "#4AF626",
-          black: "#1A1F2C",
-          gray: "#8E9196",
+          green: "var(--terminal-green)",
+          black: "var(--terminal-black)",
+          gray: "var(--terminal-gray)",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
