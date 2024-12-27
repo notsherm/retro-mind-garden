@@ -141,32 +141,27 @@
     @apply rounded-lg p-4;
   }
 
+  /* Left panel specific styles - removed box/container styling */
   .left-panel {
     @apply bg-transparent;
   }
 
+  /* Right panel specific styles */
   .right-panel {
     @apply bg-terminal-black border border-terminal-green;
-    max-height: calc(100vh - 12rem);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
   }
 
-  .space-y-6 {
-    max-height: calc(100vh - 16rem);
-    overflow-y: auto;
-    padding-bottom: 1rem;
-  }
-
+  /* Hide email input initially */
   .supabase-auth-ui_ui-container form > div:first-child {
     @apply hidden;
   }
 
+  /* Style the auth container */
   .supabase-auth-ui_ui-container {
     @apply space-y-4;
   }
 
+  /* Add typing animation */
   .supabase-auth-ui_ui-label {
     @apply overflow-hidden whitespace-nowrap border-r-4 border-terminal-green animate-typing;
   }
