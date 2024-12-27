@@ -79,7 +79,6 @@ export const Journal = () => {
       return;
     }
 
-    // Use selectedDate instead of current date to ensure entries are saved on the correct date
     const newSection = {
       title: newSectionTitle,
       content: newContent,
@@ -168,6 +167,37 @@ export const Journal = () => {
     }
   };
 
+  const analyzeEntries = async () => {
+    try {
+      const { data: response, error } = await supabase.functions.invoke('analyze-entries', {
+        body: { entries: sections }
+      });
+
+      if (error) {
+        toast({
+          title: "Analysis Error",
+          description: error.message,
+          duration: 2000,
+        });
+        return;
+      }
+
+      setAnalysis(response.analysis);
+      setShowAnalysis(true);
+      toast({
+        title: "Analysis complete",
+        description: "AI has analyzed your entries",
+        duration: 2000,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to analyze entries",
+        duration: 2000,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen h-screen p-4 bg-terminal-black relative">
       <HamburgerMenu
@@ -180,7 +210,6 @@ export const Journal = () => {
       />
       
       <div className="h-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 pt-16">
-        {/* Left Column - Always visible input area */}
         <div className="terminal-window h-full">
           <JournalInput
             title={newSectionTitle}
@@ -191,7 +220,6 @@ export const Journal = () => {
           />
         </div>
 
-        {/* Right Column - Historical entries & Analysis */}
         <div className="terminal-window h-full flex flex-col">
           {!showAnalysis ? (
             <>
@@ -212,15 +240,7 @@ export const Journal = () => {
               
               {sections.length > 0 && (
                 <button
-                  onClick={() => {
-                    setShowAnalysis(true);
-                    setAnalysis("Based on your entries, it seems you're feeling reflective today. Your writing shows a pattern of introspective thinking...");
-                    toast({
-                      title: "Analysis complete",
-                      description: "AI has analyzed your entries",
-                      duration: 2000,
-                    });
-                  }}
+                  onClick={analyzeEntries}
                   className="retro-button mt-4"
                 >
                   Analyze Entries
