@@ -137,7 +137,10 @@
     @apply bg-terminal-black border border-terminal-green;
     transform: translate3d(0, 0, 0);
     will-change: transform;
-    max-height: calc(100vh - 2rem);
+    min-height: calc(100vh - 2rem);
+    height: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   .retro-input {
