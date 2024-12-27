@@ -84,14 +84,11 @@ export const Settings = () => {
 
             <div className="space-y-4 border-t border-terminal-green pt-4">
               <h3 className="text-terminal-green font-semibold">Privacy Mode</h3>
-              <div className="flex items-center justify-between">
-                <div className="text-xs text-terminal-gray">Blur journal entries in public</div>
-                <Switch
-                  checked={blurMode}
-                  onCheckedChange={handleBlurModeChange}
-                  className="data-[state=checked]:bg-terminal-green"
-                />
-              </div>
+              <Switch
+                checked={blurMode}
+                onCheckedChange={handleBlurModeChange}
+                className="data-[state=checked]:bg-terminal-green"
+              />
             </div>
 
             <div className="pt-4 border-t border-terminal-green space-y-4">
