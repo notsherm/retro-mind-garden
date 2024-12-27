@@ -141,6 +141,13 @@
     height: auto;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    
+    /* Add wider width for desktop screens */
+    @media (min-width: 1024px) {
+      max-width: 700px;
+    }
   }
 
   .retro-input {
