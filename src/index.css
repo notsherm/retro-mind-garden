@@ -8,12 +8,12 @@
   :root,
   [data-theme="classic-terminal"] {
     --terminal-green: #4AF626;
-    --terminal-black: #1A1F2C;
+    --terminal-black: #221F26;  /* Changed to dark blue shade instead of pure black */
     --terminal-gray: #8E9196;
     
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 2.9%;
+    --card: 222.2 84% 3.9%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
@@ -39,7 +39,7 @@
     
     --background: 0 0% 98%;
     --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 94%;
+    --card: 0 0% 96%;  /* Slightly darker than background for better contrast */
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 98%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -91,7 +91,7 @@
     
     --background: 217 33% 17%;
     --foreground: 210 40% 98%;
-    --card: 217 33% 14%;
+    --card: 217 33% 15%;
     --card-foreground: 210 40% 98%;
     --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
@@ -105,8 +105,8 @@
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 27%;
-    --input: 217 33% 27%;
+    --border: transparent;  /* Removed unintended borders */
+    --input: transparent;   /* Removed unintended borders */
     --ring: 199 89% 48%;
   }
 
