@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { EditHistory } from './EditHistory';
 
 interface Entry {
@@ -17,9 +17,18 @@ interface EntryListProps {
   selectedDate: string;
   onDateChange: (direction: 'prev' | 'next') => void;
   onEntryClick: (entry: Entry) => void;
+  onStartCreating: () => void;
+  isCreating: boolean;
 }
 
-export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }: EntryListProps) => {
+export const EntryList = ({ 
+  entries, 
+  selectedDate, 
+  onDateChange, 
+  onEntryClick,
+  onStartCreating,
+  isCreating
+}: EntryListProps) => {
   const isCurrentDate = () => {
     const today = new Date().toISOString().split('T')[0];
     return selectedDate === today;
@@ -43,6 +52,16 @@ export const EntryList = ({ entries, selectedDate, onDateChange, onEntryClick }:
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
+
+      {!isCreating && (
+        <Button 
+          onClick={onStartCreating}
+          className="w-full mb-6 bg-transparent border border-terminal-green text-terminal-green hover:bg-terminal-green/10 transition-colors flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          New Entry
+        </Button>
+      )}
 
       <div className="space-y-6">
         {filteredEntries.map((entry) => (
