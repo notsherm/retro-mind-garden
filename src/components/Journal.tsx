@@ -104,7 +104,7 @@ export const Journal = () => {
       
       <div className="max-w-7xl mx-auto pt-16 px-4 pb-4">
         <div className="flex flex-col items-center">
-          <div className="terminal-window right-panel w-[600px] z-[1] relative">
+          <div className="terminal-window right-panel w-full max-w-[600px] sm:w-[600px] z-[1] relative">
             {!showAnalysis ? (
               <>
                 <EntryList 
