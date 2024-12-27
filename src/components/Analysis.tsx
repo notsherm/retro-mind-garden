@@ -25,7 +25,7 @@ export const Analysis = ({
       <button
         onClick={onAnalyze}
         disabled={isAnalyzing}
-        className={`retro-button mt-4 flex items-center justify-center gap-2 ${
+        className={`retro-button mt-4 flex items-center justify-center gap-2 rounded-md ${
           isAnalyzing ? 'opacity-70' : ''
         }`}
       >
@@ -48,7 +48,7 @@ export const Analysis = ({
       </div>
       <Button
         onClick={onBack}
-        className="retro-button w-full"
+        className="retro-button w-full rounded-md"
       >
         Back to Entries
       </Button>
