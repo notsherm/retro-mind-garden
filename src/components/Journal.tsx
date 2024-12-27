@@ -96,15 +96,15 @@ export const Journal = () => {
   }
 
   return (
-    <div className="min-h-screen bg-terminal-black relative flex flex-col">
+    <div className="min-h-screen bg-terminal-black relative">
       <JournalNavBar 
         onDateChange={setSelectedDate}
         onSearch={handleSearch}
       />
       
-      <div className="flex-1 w-full max-w-7xl mx-auto pt-16 px-4 pb-4 overflow-hidden">
-        <div className="flex flex-col items-center h-full">
-          <div className="terminal-window right-panel w-full max-w-[600px] z-[1] relative min-h-0 flex-1 overflow-y-auto">
+      <div className="max-w-7xl mx-auto pt-16 px-4 pb-4">
+        <div className="flex flex-col items-center">
+          <div className="terminal-window right-panel w-[600px] z-[1] relative">
             {!showAnalysis ? (
               <>
                 <EntryList 
