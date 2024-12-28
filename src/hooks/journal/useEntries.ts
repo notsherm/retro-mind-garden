@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Section } from '@/types/journal';
 import { JournalState, JournalActions } from './types';
-import { format, startOfDay } from 'date-fns';
+import { useToast } from "@/hooks/use-toast";
+import { useEntryOperations } from './useEntryOperations';
 
 export const useEntries = (
   state: Pick<JournalState, 'selectedDate' | 'newSectionTitle' | 'newContent'>,
   actions: Pick<JournalActions, 'setSections' | 'setNewSectionTitle' | 'setNewContent'>
 ) => {
   const { toast } = useToast();
+  const { createEntry, updateEntry, deleteEntry } = useEntryOperations();
 
   const loadEntries = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -43,15 +44,6 @@ export const useEntries = (
   };
 
   const addNewSection = async () => {
-    if (!state.newSectionTitle.trim() || !state.newContent.trim()) {
-      toast({
-        title: "Missing information",
-        description: "Please provide both a title and content for your entry",
-        duration: 2000,
-      });
-      return;
-    }
-
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({
@@ -62,113 +54,53 @@ export const useEntries = (
       return;
     }
 
-    // Get the current timestamp and format the date in YYYY-MM-DD
-    const now = new Date();
-    const entryDate = format(startOfDay(now), 'yyyy-MM-dd');
+    const success = await createEntry(
+      state.newSectionTitle,
+      state.newContent,
+      user.id,
+      state.selectedDate
+    );
 
-    const newSection = {
-      title: state.newSectionTitle,
-      content: state.newContent,
-      timestamp: now.getTime(),
-      date: entryDate,
-      user_id: user.id
-    };
-
-    const { error } = await supabase
-      .from('journal_entries')
-      .insert([newSection]);
-
-    if (error) {
-      toast({
-        title: "Error saving entry",
-        description: error.message,
-        duration: 2000,
-      });
-      return;
+    if (success) {
+      if (state.selectedDate === new Date().toISOString().split('T')[0]) {
+        await loadEntries();
+      }
+      actions.setNewSectionTitle("");
+      actions.setNewContent("");
     }
+  };
 
-    // If we're viewing the same date as the entry, reload entries
-    if (state.selectedDate === entryDate) {
+  const handleUpdateEntry = async (section: Section) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const success = await updateEntry(
+      section,
+      state.newSectionTitle,
+      state.newContent
+    );
+
+    if (success) {
       await loadEntries();
-    } else {
-      toast({
-        title: "Entry added",
-        description: `Entry has been added to ${format(now, 'MM/dd/yyyy')}`,
-        duration: 3000,
-      });
+      actions.setNewSectionTitle("");
+      actions.setNewContent("");
     }
-    
-    actions.setNewSectionTitle("");
-    actions.setNewContent("");
   };
 
-  const updateEntry = async (section: Section) => {
+  const handleDeleteEntry = async (entryId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Keep the original date of the entry
-    const updatedSection = {
-      ...section,
-      title: state.newSectionTitle,
-      content: state.newContent,
-      updated_at: new Date().toISOString()
-    };
-
-    const { error } = await supabase
-      .from('journal_entries')
-      .update(updatedSection)
-      .eq('id', section.id);
-
-    if (error) {
-      toast({
-        title: "Error updating entry",
-        description: error.message,
-        duration: 2000,
-      });
-      return;
+    const success = await deleteEntry(entryId);
+    if (success) {
+      await loadEntries();
     }
-
-    await loadEntries();
-    actions.setNewSectionTitle("");
-    actions.setNewContent("");
-
-    toast({
-      title: "Entry updated",
-      description: "Your changes have been saved",
-      duration: 2000,
-    });
-  };
-
-  const deleteEntry = async (entryId: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('journal_entries')
-      .delete()
-      .eq('id', entryId);
-
-    if (error) {
-      toast({
-        title: "Error deleting entry",
-        description: error.message,
-        duration: 2000,
-      });
-      return;
-    }
-
-    await loadEntries();
-    toast({
-      title: "Entry deleted",
-      description: "Your entry has been removed",
-      duration: 2000,
-    });
   };
 
   return {
     loadEntries,
     addNewSection,
-    updateEntry,
-    deleteEntry
+    updateEntry: handleUpdateEntry,
+    deleteEntry: handleDeleteEntry
   };
 };
