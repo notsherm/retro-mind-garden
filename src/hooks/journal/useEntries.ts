@@ -3,7 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Section } from '@/types/journal';
 import { JournalState, JournalActions } from './types';
-import { format } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 
 export const useEntries = (
   state: Pick<JournalState, 'selectedDate' | 'newSectionTitle' | 'newContent'>,
@@ -62,15 +62,15 @@ export const useEntries = (
       return;
     }
 
-    // Always use today's date for new entries, regardless of selected date
-    const today = new Date();
-    const todayStr = format(today, 'yyyy-MM-dd');
+    // Get the current timestamp and format the date in YYYY-MM-DD
+    const now = new Date();
+    const entryDate = format(startOfDay(now), 'yyyy-MM-dd');
 
     const newSection = {
       title: state.newSectionTitle,
       content: state.newContent,
-      timestamp: Date.now(),
-      date: todayStr, // Use today's date instead of selected date
+      timestamp: now.getTime(),
+      date: entryDate,
       user_id: user.id
     };
 
@@ -87,14 +87,13 @@ export const useEntries = (
       return;
     }
 
-    // If we're viewing today's date, reload entries
-    if (state.selectedDate === todayStr) {
+    // If we're viewing the same date as the entry, reload entries
+    if (state.selectedDate === entryDate) {
       await loadEntries();
     } else {
-      // If viewing a past date, notify user that entry was added to today
       toast({
-        title: "Entry added to today",
-        description: "New entries are always added to today's date",
+        title: "Entry added",
+        description: `Entry has been added to ${format(now, 'MM/dd/yyyy')}`,
         duration: 3000,
       });
     }
@@ -107,6 +106,7 @@ export const useEntries = (
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // Keep the original date of the entry
     const updatedSection = {
       ...section,
       title: state.newSectionTitle,
