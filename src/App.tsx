@@ -15,20 +15,24 @@ function App() {
     // Get initial session
     const initSession = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        
-        if (!session) {
-          // No active session found
-          console.log("No active session found");
-          throw new Error("No active session");
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Session error:", error);
+          throw error;
         }
         
-        // Verify session is valid by making a test request
-        const { error: userError } = await supabase.auth.getUser();
-        if (userError) throw userError;
-        
-        setSession(session);
+        if (currentSession) {
+          // Verify session is valid by making a test request
+          const { error: userError } = await supabase.auth.getUser();
+          if (userError) {
+            console.error("User verification error:", userError);
+            throw userError;
+          }
+          setSession(currentSession);
+        } else {
+          console.log("No active session found");
+          setSession(null);
+        }
       } catch (error: any) {
         console.error("Session initialization error:", error);
         // Clear session and local storage on error
@@ -38,7 +42,7 @@ function App() {
         
         toast({
           title: "Session Error",
-          description: "Your session has expired. Please sign in again.",
+          description: "Please sign in to continue.",
           duration: 3000,
         });
       } finally {
@@ -61,14 +65,14 @@ function App() {
           description: "You have been signed out successfully",
           duration: 3000,
         });
-      } else if (_event === 'SIGNED_IN') {
+      } else if (_event === 'SIGNED_IN' && session) {
         setSession(session);
         toast({
           title: "Signed In",
           description: "Welcome back!",
           duration: 3000,
         });
-      } else if (_event === 'TOKEN_REFRESHED') {
+      } else if (_event === 'TOKEN_REFRESHED' && session) {
         setSession(session);
       }
       
