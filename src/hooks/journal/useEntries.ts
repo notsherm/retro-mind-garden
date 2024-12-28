@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Section } from '@/types/journal';
 import { JournalState, JournalActions } from './types';
+import { format } from 'date-fns';
 
 export const useEntries = (
   state: Pick<JournalState, 'selectedDate' | 'newSectionTitle' | 'newContent'>,
@@ -61,11 +62,15 @@ export const useEntries = (
       return;
     }
 
+    // Always use today's date for new entries, regardless of selected date
+    const today = new Date();
+    const todayStr = format(today, 'yyyy-MM-dd');
+
     const newSection = {
       title: state.newSectionTitle,
       content: state.newContent,
       timestamp: Date.now(),
-      date: state.selectedDate,
+      date: todayStr, // Use today's date instead of selected date
       user_id: user.id
     };
 
@@ -82,15 +87,20 @@ export const useEntries = (
       return;
     }
 
-    await loadEntries();
+    // If we're viewing today's date, reload entries
+    if (state.selectedDate === todayStr) {
+      await loadEntries();
+    } else {
+      // If viewing a past date, notify user that entry was added to today
+      toast({
+        title: "Entry added to today",
+        description: "New entries are always added to today's date",
+        duration: 3000,
+      });
+    }
+    
     actions.setNewSectionTitle("");
     actions.setNewContent("");
-
-    toast({
-      title: "Entry added",
-      description: "Your journal entry has been saved",
-      duration: 2000,
-    });
   };
 
   const updateEntry = async (section: Section) => {
